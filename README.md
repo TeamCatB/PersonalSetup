@@ -19,8 +19,8 @@ There are several technologies at play for the set-up and most of the major piec
 - [Docker]
 - [Unbound DNS]
 - [Wireguard]
-- [Nextcloud]
 - [Wasabi]
+- [Nextcloud]
 - [pfSense]
 - [Code-server]
 - [Caddy]
@@ -133,14 +133,7 @@ Also grab an API token for later and keep that somewhere safe until then. We'll 
 
 Docker provides a platform to easily deploy applications within containers, ensuring isolation and consistent environments. Drawing parallels with FreeBSD's "jails" and Linux's "chroot", Docker enhances these concepts with a suite of features that simplify container interaction. Coupled with a vast repository of public images for a myriad of applications, Docker is an invaluable tool that every developer should consider mastering.
 
-Here we will detail some pre-req work needed for the Docker containers to be made.
-Also provided are the sources for the containers themselves.
-(Network bridge for Wireguard and Unbound DNS)
-
-
-We will set-up the following containers:
-
-Unbound DNS
+Detailed below are some pre-requisites needed for the containers themselves
 
 
 We need to modifiy systemd-resolved as that is how systemd configures what DNS servers to use for resolving hostnames.
@@ -185,12 +178,72 @@ That network name will be used in the commands for Unbound and Wireguard to make
 The IP can be set to whatever technically, but be certain it doesn't clash with your downstream networks (on your router for example) for Wireguard too
 Similarly the name can be whatever, but make sure to use that name in the later commands.
 
+
+### Wasabi
+(In Nextcloud UI and on Wasabi's website)
+
+Wasabi is an affordable cloud storage provider known for its S3 compatibility, high speeds, flat pricing, robust encryption, and data immutability features, making it a competitive alternative to giants like Amazon S3.
+**A big emphasis, however, on no egress or API request fees**
+
+Create a Wasabi account:
+Visit the Wasabi website and sign up if you haven't already.
+
+Log into the Wasabi Console:
+Navigate to the Wasabi Management Console and sign in with your account credentials.
+
+Create an S3 bucket:
+Click on the “Buckets” link in the left navigation panel.
+Click on the “Create Bucket” button.
+Choose a unique name for your bucket and select a region that's closest to your Nextcloud server to minimize latency.
+Leave the rest of the settings as default and create the bucket.
+
+Create Access Keys:
+Click on “Access Keys” under "IAM" in the left navigation panel.
+Click on the “Create New Access Key” button.
+Save the provided Access Key ID and Secret Access Key securely. You'll need these to configure Nextcloud.
+
+
 ### Nextcloud
 (On VPS)
 Container github: https://github.com/nextcloud/all-in-one
 
-### Wasabi
-(In Nextcloud UI and on Wasabi's website)
+Nextcloud is an open-source software suite that allows users to store their data (like files, calendars, contacts, and more) securely and accessibly. Essentially, it's a self-hosted productivity platform that offers the benefits of online cloud services like Dropbox, Google Drive, or Microsoft OneDrive but on servers you control.
+
+Now for installing the container:
+
+sudo docker run --init --sig-proxy=false --name nextcloud-aio-mastercontainer --restart always --publish 8080:8080 --env APACHE_PORT=11000 --env APACHE_IP_BINDING=0.0.0.0 --volume nextcloud_aio_mastercontainer:/mnt/docker-aio-config --volume /var/run/docker.sock:/var/run/docker.sock:ro nextcloud/all-in-one:latest
+
+This allows us to use Caddy on the VPS to route easier to the Nextcloud container by configuring the Apache server more effectively.
+If you opted against the Caddy reverse proxy than check the documentation for normal docker run. https://github.com/nextcloud/all-in-one#how-to-use-this
+
+
+Now for configuring Wasabi with Nextcloud
+
+Log into your Nextcloud instance:
+Sign in as an admin user.
+
+Navigate to the external storage settings:
+Click on your profile picture in the top right corner and select “Settings.”
+In the left pane, click on “External storages” under the “Administration” section.
+
+
+Add an S3 bucket:
+Click on the “Add storage” drop-down menu and select “Amazon S3.”
+
+Fill out the following fields:
+Bucket: Your Wasabi bucket name.
+Access Key: The Access Key ID you got from Wasabi.
+Secret Key: The Secret Access Key from Wasabi.
+Hostname: s3.wasabisys.com (or the endpoint relevant to your Wasabi region).
+Port: 443.
+Region: Leave blank or fill in the region you chose in Wasabi.
+Use SSL/TLS: Checked.
+Legacy (v2) authentication: Unchecked.
+Save the configuration:
+
+Click on the check mark or the save icon (depending on your Nextcloud version) to save the settings.
+
+
 
 ### Unbound DNS
 (On VPS)
@@ -445,8 +498,5 @@ docker run --env-file .env --name caddy -d -p 443:443 caddy
 
 
 ### Jetbrains Gateway
-
-
-## Wrap Up
 
 
