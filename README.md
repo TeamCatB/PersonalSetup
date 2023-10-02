@@ -2,7 +2,7 @@
 
 
 ## Summary
-This all serves to enable code-server an encrypted VHD VM generated via Packer protected by a 2FA Oauth2 running via QEMU on an encrypted host machine w/ a TAP device for layer 2 traffic routed to using the Wireguard peer IP on a pfsense router through the use of entries on the NAT table and the host device firewalled off from any traffic. On the other end of the Wireguard tunnel is a VPS Wireguard container which serves to provide an Unbound DNS server container hosts to the peers for intranet access.
+This all serves to enable code-server on an encrypted VHD VM generated via Packer protected by a 2FA Oauth2 running via QEMU on an encrypted host machine w/ a TAP device for layer 2 traffic routed to using the Wireguard peer IP on a pfsense router through the use of entries on the NAT table and the host device firewalled off from any traffic. On the other end of the Wireguard tunnel is a VPS Wireguard container which serves to provide an Unbound DNS server container hosts to the peers for intranet access.
 Alongside this is a self-hosted cloud storage implementation using Wasabi and Nextcloud.
 
 This will walk through the process utilized to establish a well-fortified, limited access, virtual machine used for development purposes such as code-server or Jetbrain's Gateway.
@@ -111,8 +111,11 @@ The immediate thing would be to acquire a Virtual Private Server host. Personall
 The next step after acquiring one (I don't know many, but I assume all provide an OS for you to use) and having it defaulted to whatever you like is to SSH into it.
 We want Caddy and Docker for what we plan to do.
 
+```
+curl -fsSL https://get.docker.com | sudo sh
+sudo apt-get install caddy
+```
 
-```sudo apt-get install docker caddy```
 
 Caddy, *while technically not needed*, is going to be used for a reverse proxy server that will direct to our containers accordingly. This allows us more granularity on our routing to services long-term.
 We're going to containerize our applications for this portion as upkeep of these services is easier when they're easily deployable containers.
@@ -210,9 +213,8 @@ Container github: https://github.com/nextcloud/all-in-one
 Nextcloud is an open-source software suite that allows users to store their data (like files, calendars, contacts, and more) securely and accessibly. Essentially, it's a self-hosted productivity platform that offers the benefits of online cloud services like Dropbox, Google Drive, or Microsoft OneDrive but on servers you control.
 
 Now for installing the container:
-```
+
 sudo docker run --init --sig-proxy=false --name nextcloud-aio-mastercontainer --restart always --publish 8080:8080 --env APACHE_PORT=11000 --env APACHE_IP_BINDING=0.0.0.0 --volume nextcloud_aio_mastercontainer:/mnt/docker-aio-config --volume /var/run/docker.sock:/var/run/docker.sock:ro nextcloud/all-in-one:latest
-```
 
 This allows us to use Caddy on the VPS to route easier to the Nextcloud container by configuring the Apache server more effectively.
 If you opted against the Caddy reverse proxy than check the documentation for normal docker run. https://github.com/nextcloud/all-in-one#how-to-use-this
@@ -499,5 +501,8 @@ docker run --env-file .env --name caddy -d -p 443:443 caddy
 
 
 ### Jetbrains Gateway
+
+
+### Accessing the goods
 
 
