@@ -210,8 +210,9 @@ Container github: https://github.com/nextcloud/all-in-one
 Nextcloud is an open-source software suite that allows users to store their data (like files, calendars, contacts, and more) securely and accessibly. Essentially, it's a self-hosted productivity platform that offers the benefits of online cloud services like Dropbox, Google Drive, or Microsoft OneDrive but on servers you control.
 
 Now for installing the container:
-
+```
 sudo docker run --init --sig-proxy=false --name nextcloud-aio-mastercontainer --restart always --publish 8080:8080 --env APACHE_PORT=11000 --env APACHE_IP_BINDING=0.0.0.0 --volume nextcloud_aio_mastercontainer:/mnt/docker-aio-config --volume /var/run/docker.sock:/var/run/docker.sock:ro nextcloud/all-in-one:latest
+```
 
 This allows us to use Caddy on the VPS to route easier to the Nextcloud container by configuring the Apache server more effectively.
 If you opted against the Caddy reverse proxy than check the documentation for normal docker run. https://github.com/nextcloud/all-in-one#how-to-use-this
