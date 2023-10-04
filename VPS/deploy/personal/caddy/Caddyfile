@@ -1,0 +1,7 @@
+https://{env.NEXTCLOUD_SUBDOMAIN}:443 {
+        reverse_proxy localhost:{env.NEXTCLOUD_APACHE_PORT}
+}
+
+http://{env.NEXTCLOUD_SUBDOMAIN}:80 {
+        reverse_proxy localhost:{env.NEXTCLOUD_APACHE_PORT}
+}

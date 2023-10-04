@@ -1,0 +1,61 @@
+{
+	http_port 8080
+	https_port 443
+
+	order authenticate before respond
+	order authorize before basicauth
+
+	security {
+		oauth identity provider work-github {env.WORK_GITHUB_CLIENT_ID} {env.WORK_GITHUB_CLIENT_SECRET}
+
+		authentication portal workportal {
+			crypto default token lifetime 3600
+			crypto key sign-verify {env.WORK_JWT_SHARED_KEY}
+			cookie domain {env.WORK_SUBDOMAIN}
+			enable identity provider work-github
+
+			transform user {
+				match realm work-github
+				action add role authp/user
+			}
+
+			transform user {
+				match realm work-github
+				match sub github.com/{env.WORK_GITHUB_USERNAME}
+				action add role authp/admin
+			}
+		}
+
+		authorization policy workpolicy {
+			set auth url https://auth.{env.WORK_SUBDOMAIN}/
+			crypto key verify {env.WORK_JWT_SHARED_KEY}
+			allow roles authp/admin authp/user
+			validate bearer header
+			inject headers with claims
+		}
+    }
+}
+
+(tls_cloudflare) {
+    tls {
+        issuer acme {
+            dir https://acme-v02.api.letsencrypt.org/directory
+            dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+        }
+        issuer zerossl {
+            dir https://acme.zerossl.com/v2/DV90
+            dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+        }
+    }
+}
+
+auth.{env.WORK_SUBDOMAIN}{
+	import tls_cloudflare
+	authenticate with workportal
+}
+
+{env.WORK_SUBDOMAIN}{
+	import tls_cloudflare
+	authorize with workpolicy
+	reverse_proxy {env.WORK_REDIRECT_IP}
+}

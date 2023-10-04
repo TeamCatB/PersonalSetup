@@ -1,0 +1,125 @@
+version: "2.1"
+services:
+  wireguard:
+    image: lscr.io/linuxserver/wireguard:latest
+    container_name: work-vpn-container
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - SERVERURL=vpn.${WORK_SUBDOMAIN}
+      - SERVERPORT=${WORK_VPN_PORT}
+      - PEERS=${WORK_PEERS}
+      - PEERDNS=${WORK_DNS_IPV4}
+      - INTERNAL_SUBNET=${WORK_SUBNET}
+      - ALLOWEDIPS=0.0.0.0/0
+      - PERSISTENTKEEPALIVE_PEERS=all
+      - LOG_CONFS=true
+    volumes:
+      - /deploy/work/wireguard:/config
+      - /deploy/work/modules:/lib/modules
+    network:
+      - work-network
+        network_mode: bridge
+    ports:
+      - ${WORK_VPN_PORT}:${WORK_VPN_PORT}/udp
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
+  wireguard:
+    image: lscr.io/linuxserver/wireguard:latest
+    container_name: personal-vpn-container
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - SERVERURL=vpn.${PERSONAL_SUBDOMAIN}
+      - SERVERPORT=${PERSONAL_VPN_PORT}
+      - PEERS=${PERSONAL_PEERS}
+      - PEERDNS=${PERSONAL_DNS_IPV4}
+      - INTERNAL_SUBNET=${PERSONAL_SUBNET}
+      - ALLOWEDIPS=0.0.0.0/0
+      - PERSISTENTKEEPALIVE_PEERS=all
+      - LOG_CONFS=true
+    volumes:
+      - /deploy/personal/wireguard:/config
+      - /deploy/personal/modules:/lib/modules
+    networks:
+      - personal-network
+    network_mode: bridge
+    ports:
+      - ${PERSONAL_VPN_PORT}:${PERSONAL_VPN_PORT}/udp
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
+  unbound:
+    container_name: work-dns-container
+    image: "mvance/unbound:latest"
+    networks:
+      work-network:
+        ipv4_address: ${WORK_DNS_IPV4}
+    network_mode: bridge
+    volumes:
+      - /deploy/work/unbound/a-records.conf:/opt/unbound/etc/unbound/a-records.conf
+    restart: unless-stopped
+  unbound:
+    container_name: personal-dns-container
+    image: "mvance/unbound:latest"
+    networks:
+      work-network:
+        ipv4_address: ${PERSONAL_DNS_IPV4}
+    network_mode: bridge
+    volumes:
+      - /deploy/personal/unbound/a-records.conf:/opt/unbound/etc/unbound/a-records.conf
+    restart: unless-stopped
+  nextcloud-aio-mastercontainer:
+    image: nextcloud/all-in-one:latest
+    init: true
+    restart: always
+    container_name: nextcloud-aio-mastercontainer
+    volumes:
+      - nextcloud_aio_mastercontainer:/mnt/docker-aio-config
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 8080:8080
+    environment:
+      APACHE_PORT=11000
+      APACHE_IP_BINDING=127.0.0.1
+  caddy:
+    image: caddy:alpine
+    restart: always
+    container_name: caddy
+    volumes:
+      - /deploy/personal/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - /deploy/.env:/etc/caddy/Caddyfile
+      - /deploy/personal/caddy/certs:/certs
+      - /deploy/personal/caddy/config:/config
+      - /deploy/personal/caddy/data:/data
+      - /deploy/personal/caddy/sites:/srv
+    ports:
+      - "80:80"
+      - "443:443"
+    # network_mode: host
+networks:
+  work-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${WORK_IPAM_SUBNET}/24
+  personal-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${PERSONAL_IPAM_SUBNET}/24
+volumes:
+  mydata:
+  nextcloud_aio_mastercontainer:
+    name: nextcloud_aio_mastercontainer

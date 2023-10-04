@@ -97,7 +97,7 @@ sudo apt update && sudo apt install packer
 An example script file is provided, but it is short so no harm in adding it here:
 
 ```
-PACKER_LOG=1 packer build -var='account_username=MyName' -var='account_password=Password' -var='account_fullname=My Name' -var='encryption_passphrase=ASecurePassphrase' oceanspray-debian-qemu.pkr.hcl
+PACKER_LOG=1 packer build -var='account_username=MyName' -var='account_password=Password' -var='account_fullname=My Name' -var='encryption_passphrase=ASecurePassphrase' personal-debian-qemu.pkr.hcl
 ```
 
 PACKER_LOG can be omitted, but it provides some details about what is going on. All the entries in there should generally be updated and if the VM is to run on the same device it might be advisable to update the encryption password upon logging into your VM.
