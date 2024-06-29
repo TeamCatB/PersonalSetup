@@ -65,7 +65,7 @@ function formatPartitions () {
 
 # Mount the file systems
 function mountFileSystems () {
-        # Mount root to /m
+        # Mount root to /mnt
         mount "${device}3" /mnt
         # Make director and mount the EFI (boot) partition
         mount --mkdir "${device}1" /mnt/boot
