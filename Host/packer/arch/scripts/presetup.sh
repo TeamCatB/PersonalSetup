@@ -11,71 +11,73 @@ function consoleConfiguration () {
         # localectl list-keymaps
         # loadkeys us
         # setfont
-        # cat /sys/firmware/efi/fw_platform_size
+        cat /sys/firmware/efi/fw_platform_size
 }
 
 # Generates a partition. Takes required positional arguments.
 function buildPartition () {
-        echo "n\n"
+
+        # Declare a new partition
+        (echo "n" \
         # Primary or extended (is implied after the first)
-        echo "$1\n"
+        echo "$1" \
         # Partition number
-        echo "$2\n"
+        echo "$2" \
         # Partition start
-        echo "$3\n"
+        echo "$3" \
         # Partition end
-        echo "$4\n"
-        # Change partition type
-        echo "$5\n"
-        # Partition number select
-        echo "$6\n"
-        # Partition type
-        echo "$6\n"
-}
-
-# Prepare the partitions using fdisk; Takes device as a positional argument
-function preparePartitions () {
-        # Open device in fdisk
-        fdisk $1
-        # Set to GPT; it may default to MBR
-        echo 'g\n'
-
-        buildPartition "p" "" "" $bootSize "t" "" "1"
-        buildPartition "" "" "" $swapSize "t" "" "19"
-        buildPartition "" "" "" $rootSize "t" "" "23"
-        buildPartition "" "" "" "" "t" "" "42"
-
+        echo "$4" \
         # Write changes to disk
-        echo 'w\n'
+        echo 'w') | fdisk $device
+        sleep 5
+        # Change partition type
+        (echo "$5" \
+        # Partition number select
+        echo "$2" \
+        # Partition type
+        echo "$6"
+        echo 'w') | fdisk $device
+        sleep 5
 }
 
-# Format the partitions; Takes device as a positional argument
+# Prepare the partitions using fdisk
+function preparePartitions () {
+        # Set to GPT; it may default to MBR. Then write changes to disk.
+        (echo 'g'; echo 'w';) | fdisk $device
+        sleep 10
+        buildPartition "p" "1" " " $bootSize "t" "1"
+        buildPartition "" "2" " " $swapSize "t" "19"
+        buildPartition "" "3" " " $rootSize "t" "23"
+        buildPartition "" "4" " " " " "t" "42"
+}
+
+# Format the partitions
 function formatPartitions () {
         # Format EFI system partition (boot)
-        mkfs.fat -F 32 $11
+        mkfs.fat -F 32 "${device}1"
         # Format swap file partition
-        mkswap $12
+        mkswap "${device}2"
         # Format root partition
-        mkfs.ext4 $13
+        mkfs.ext4 "${device}3"
         # Format home partition
-        mkfs.ext4 $14
+        mkfs.ext4 "${device}4"
 }
 
-# Mount the file systems; Takes device as a position argument
+# Mount the file systems
 function mountFileSystems () {
         # Mount root to /m
-        mount $13 /mnt
+        mount "${device}3" /mnt
         # Make director and mount the EFI (boot) partition
-        mount --mkdir $11 /mnt/boot
+        mount --mkdir "${device}1" /mnt/boot
         # Make directory and mount the home partition
-        mount --mkdir $14 /mnt/home
+        mount --mkdir "${device}4" /mnt/home
         # Activate swap partition
-        swapon $12
+        swapon "${device}2"
 }
 
 function archSpecific () {
         # Arch's way of providing the bare essentials for getting a system running
-        pacstrap -K /mnt base linux linux-firmware
+        pacstrap -K /mnt base linux linux-firmware --noconfirm
 
         # Generate the file system table for the new system
         genfstab -U /mnt >> /mnt/etc/fstab
@@ -112,7 +114,7 @@ function archSpecific () {
         # echo "${password}\n"
 
         # Install package for GRUB and efibootmgr
-        pacman -Syu grub efibootmgr
+        pacman -Syu grub efibootmgr --noconfirm
 
         # Installs GRUB to the efi directory
         grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=GRUB
@@ -125,8 +127,8 @@ function archSpecific () {
 }
 
 consoleConfiguration
-preparePartitions $device
-formatPartitions $device
-mountFileSystems $device
+preparePartitions
+formatPartitions
+mountFileSystems
 archSpecific
 
