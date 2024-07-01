@@ -22,21 +22,33 @@ variable "encryption_passphrase" {
   type = string
   description = "The passphrase that will be used to decrypt the virtual hard drives with."
 }
+
+packer {
+  required_plugins {
+    qemu = {
+      version = ">= 1.0.9"
+      source = "github.com/hashicorp/qemu"
+    }
+  }
+}
+
 source "qemu" "arch" {
+  efi_boot = true
+  efi_firmware_code       = "/usr/share/edk2/x64/OVMF_CODE.4m.fd"
+  efi_firmware_vars       = "/usr/share/edk2/x64/OVMF_VARS.4m.fd"
   boot_command = [
         "<enter><wait10><wait10><wait5>",
         "/usr/bin/curl -O http://{{ .HTTPIP }}:{{ .HTTPPort }}/enable-ssh.sh<enter><wait5>",
-        "passwd<enter><wait5>",
-        "${var.account_password}<enter><wait2>",
-        "${var.account_password}<enter><wait2>",
-        "systemctl enable sshd<enter><wait2>",
-        "systemctl start sshd<enter><wait2>"
+        "passwd<enter><wait1>",
+        "${var.account_password}<enter><wait1>",
+        "${var.account_password}<enter><wait1>",
+        "systemctl enable sshd<enter><wait1>",
+        "systemctl start sshd<enter><wait1>"
   ]
   iso_url = "https://plug-mirror.rcac.purdue.edu/archlinux/iso/2024.06.01/archlinux-2024.06.01-x86_64.iso"
   iso_checksum = "sha256:4cc7e1c9f4e97b384f0d8731f317b5995bde256fcc17160d32359cab923c5892"
   disk_size = "100000M"
   format = "qcow2"
-  disk_additional_size = ["100000M"]
   accelerator = "kvm"
   http_directory = "./http"
   ssh_username = "root"
@@ -48,13 +60,12 @@ source "qemu" "arch" {
   boot_wait = "2s"
   cpus = "4"
   qemuargs = [
-    ["-m", "4096"],
+    ["-m", "8128"],
   ]
 }
 
 build {
   sources = ["source.qemu.arch"]
-
   provisioner "shell" {
     environment_vars = [
       "DEFAULT_USERNAME=${var.user}",
