@@ -45,46 +45,39 @@ function preparePartitions () {
         # Set to GPT; it may default to MBR. Then write changes to disk.
         (echo 'g'; echo 'w';) | fdisk $device
         sleep 3
-        buildPartition "p" "1" " " $bootSize "t" "1"
+        buildPartition "" "1" " " $bootSize "t" "1"
         (echo 'a'; echo '1';) | fdisk $device
-        buildPartition "" "2" " " $bootSize "t" "30"
-        (echo 'a'; echo '2';) | fdisk $device
-        buildPartition "" "3" " " $swapSize "t" "19"
-        buildPartition "" "4" " " $rootSize "t" "23"
-        buildPartition "" "5" " " " " "t" "42"
+        buildPartition "" "2" " " $swapSize "t" "19"
+        buildPartition "" "3" " " $rootSize "t" "23"
+        buildPartition "" "4" " " " " "t" "42"
 }
 
 # Format the partitions
 function formatPartitions () {
         # Format EFI system partition (boot)
-        mkfs.fat -F 32 "${device}1"
-        sleep 1
-        # Format EFI system partition (boot)
-        mkfs.ext4 "${device}2"
+        mkfs.vfat -F 32 "${device}1"
         sleep 1
         # Format swap file partition
-        mkswap "${device}3"
+        mkswap "${device}2"
         sleep 1
         # Format root partition
-        mkfs.ext4 "${device}4"
+        mkfs.ext4 "${device}3"
         sleep 1
         # Format home partition
-        mkfs.ext4 "${device}5"
+        mkfs.ext4 "${device}4"
         sleep 1
 }
 
 # Mount the file systems
 function mountFileSystems () {
         # Mount root to /mnt
-        mount --mkdir "${device}4" /mnt
+        mount --mkdir "${device}3" /mnt
         # Make director and mount the EFI (boot) partition
-        mount --mkdir "${device}1" /mnt/efi
-        # Make director and mount the EFI (boot) partition
-        mount --mkdir "${device}2" /mnt/boot
+        mount --mkdir "${device}1" /mnt/boot
         # Make directory and mount the home partition
-        mount --mkdir "${device}5" /mnt/home
+        mount --mkdir "${device}4" /mnt/home
         # Activate swap partition
-        swapon "${device}3"
+        swapon "${device}2"
 
         # mount --bind /mnt/boot /boot
         # mount --bind /mnt/home /home
@@ -124,64 +117,74 @@ UUID_SWAP=$(cryptsetup luksUUID /dev/vda8) && \
 echo "new_encrypted_swap UUID=$UUID_SWAP none luks" >> /etc/crypttab
 }
 
-function archSpecific () {
-        mkdir /mnt/boot/efi
+# Performs the behavior arch expects in chroot
+function archChroot () {
+        # Set time zone for system\
+        ln -sf /usr/share/zoneinfo/America/Chicago /etc/localtime;
+        # Sets hardware clock to the system set\
+        hwclock --systohc;
+        # Find and remove comment in locale-gen via sed
+        sed -i 's/#LANG=en_US.UTF-8/LANG=en_US.UTF-8/g' /etc/locale.gen;
+        # Run locale-gen
+        locale-gen;
+        # Locale configuration\
+        echo 'LANG=en_US.UTF-8' > /etc/locale.conf;
+
+        # Console keyboard layout\
+        # echo 'KEYMAP=de-latin1' > /etc/vconsole.conf;
+
+        # Sets the computer hostname
+        echo $hostname > /etc/hostname;
+        # Set the root account password. We do this in the Packer boot commands, so it isn't needed here.
+        # passwd;
+        # echo '${password}\n';
+        # echo '${password}\n';
+        # Creates a new initramfs, but isn't needed as pacstrap does this
+        pacman -Sy mkinitcpio --noconfirm
+        mkinitcpio -P
+        # Installs bootctl as our bootloader
+        bootctl install;
+        bootctl;
+}
+export -f archChroot
+
+# Provides setup for bootctl to be our bootloader
+function bootctlLoaderEntries () {
+        mkdir /mnt/boot/EFI
         mkdir /mnt/boot/loader
         mkdir /mnt/boot/loader/entries
-        mkdir /mnt/efi
-        mkdir /mnt/efi/loader
+        mkdir /mnt/boot/EFI/loader
 
         touch arch.conf
-        # Arch's way of providing the bare essentials for getting a system running
-        pacstrap -K /mnt base linux linux-firmware --noconfirm
-        genfstab -U /mnt >> /mnt/etc/fstab
-        lsblk -f
-        echo "Testing Salmon Fishing Here1"
-        ls /sys/firmware/efi/efivars
-        efivar --list
-        # Generate the file system table for the new system
 
-
-        echo "Testing Salmon Fishing Here2"
-
-        echo "default  arch.conf" >> /mnt/efi/loader/loader.conf
-        echo "timeout  4" >> /mnt/efi/loader/loader.conf
-        echo "console-mode max" >> /mnt/efi/loader/loader.conf
-        echo "editor   no" >> /mnt/efi/loader/loader.conf
+        echo "default  arch.conf" >> /mnt/boot/EFI/loader/loader.conf
+        echo "timeout  4" >> /mnt/boot/EFI/loader/loader.conf
+        echo "console-mode max" >> /mnt/boot/EFI/loader/loader.conf
+        echo "editor   no" >> /mnt/boot/EFI/loader/loader.conf
 
         echo "title   Arch Linux" >> /mnt/boot/loader/entries/arch.conf
         echo "linux   /vmlinuz-linux" >> /mnt/boot/loader/entries/arch.conf
         echo "initrd  /initramfs-linux.img" >> /mnt/boot/loader/entries/arch.conf
-        echo "options root=UUID=$(blkid -s UUID -o value /dev/vda2) rw" >> /mnt/boot/loader/entries/arch.conf
+        echo "options root=UUID=$(blkid -s UUID -o value ${device}3) rw" >> /mnt/boot/loader/entries/arch.conf
+}
 
-        cat /mnt/boot/loader/entries/arch.conf
-        # Set time zone for system\
-        # Sets hardware clock to the system set\
-        # Find and remove comment in locale-gen via sed\
-        # Run locale-gen\
-        # Locale configuration\
-        # Console keyboard layout\
-        # echo 'KEYMAP=de-latin1' > /etc/vconsole.conf;\
-        # Creates a new initramfs, but isn't needed as pacstrap does this\
-        # Set the root account password. We do this in the Packer boot commands, so it isn't needed here.\
-        # passwd;\
-        # echo '${password}\n';\
-        # echo '${password}\n';\
-        # Make the grub directory\
-        # Installs GRUB to the efi directory\
-        # Make the grub config file\
-        # Change root into the /mnt which holds our new system
-        arch-chroot /mnt /bin/bash -cx "\
-        ln -sf /usr/share/zoneinfo/America/Chicago /etc/localtime;\
-        hwclock --systohc;\
-        sed -i 's/#LANG=en_US.UTF-8/LANG=en_US.UTF-8/g' /etc/locale.gen;\
-        locale-gen;\
-        echo 'LANG=en_US.UTF-8' > /etc/locale.conf;\
-        echo $hostname > /etc/hostname;\
-        bootctl --esp-path=/efi --boot-path=/boot install;\
-        bootctl;\
-        systemctl reboot --boot-loader-entry=arch-custom.conf;\
-        "
+function archSpecific () {
+        bootctlLoaderEntries
+
+
+        # Arch's way of providing the bare essentials for getting a system running
+        pacstrap -K /mnt base linux linux-firmware --noconfirm
+
+        # Generate the file system table for the new system
+        genfstab -U /mnt >> /mnt/etc/fstab
+
+        # Ways to check if efivars are present
+        # ls /sys/firmware/efi/efivars
+        # efivar --list
+
+        # Changes the root being used and runs the given function
+        arch-chroot /mnt /bin/bash -c "archChroot"
+
 
         sleep 45
         #echo 'add_dracutmodules+=\"crypt lvm\"' > /etc/dracut.conf.d/crypto.conf; \
