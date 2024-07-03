@@ -32,5 +32,7 @@ MaaS expects a SimpleStream (LXD/LXC) format for images to be served to it. (htt
 
 
 We use the tool here to build those into our directory we set in HFS to be shared:
-https://github.com/MottainaiCI/simplestreams-builder
+https://canonical-lxd-imagebuilder.readthedocs-hosted.com/en/latest/howto/install/
+
+In which we use simplestream-maintainer from canonical themselves to build our directory
 
