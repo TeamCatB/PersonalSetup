@@ -21,3 +21,16 @@ port: 8080
 create-admin: password
 ```
 This sets the port to be above 1024 (1024 and lower require root). Then it sets a password for the local admin so we can set-up from there
+
+
+If your image isn't on the deploying device (it should be generally built and deployed from there) use something like rsync to get it there
+
+
+Now that you have an HTTP and File server and MaaS we need to set up the HTTP File Server to be in the format MaaS expects.
+
+MaaS expects a SimpleStream (LXD/LXC) format for images to be served to it. (https://maas.io/docs/about-standard-images)
+
+
+We use the tool here to build those into our directory we set in HFS to be shared:
+https://github.com/MottainaiCI/simplestreams-builder
+
