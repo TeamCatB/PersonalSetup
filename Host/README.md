@@ -12,8 +12,8 @@ Instructions to get MaaS and HFS set up on the deploying machine:
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 # installs node
 nvm install 20
-$MAAS_USERNAME=USERNAMEHERE
-$MAAS_EMAIL=EMAILHERE
+MAAS_USERNAME=USERNAMEHERE
+MAAS_EMAIL=EMAILHERE
 MAAS_DBUSER=USERNAMEHERE
 MAAS_DBPASS=PASSWORDHERE
 MAAS_DBNAME=DBNAMEHERE
