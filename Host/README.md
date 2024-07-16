@@ -24,7 +24,7 @@ sudo mkdir -p /etc/postgresql/14/main
 sudo touch /etc/postgresql/14/main/pg_hba.conf
 echo "host    $MAAS_DBNAME    $MAAS_DBUSER    0/0     md5" | sudo tee -a /etc/postgresql/14/main/pg_hba.conf
 sudo maas init region+rack --database-uri "postgres://$MAAS_DBUSER:$MAAS_DBPASS@$HOSTNAME/$MAAS_DBNAME"
-echo gh:GigiaJ | sudo maas createadmin --username=$MAAS_USERNAME --email=$MAAS_EMAIL
+sudo maas createadmin --username=$MAAS_USERNAME --email=$MAAS_EMAIL
 npx hfs@latest
 ```
 This installs node, maas, configures maas, then installs and runs hfs.
