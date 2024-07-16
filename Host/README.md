@@ -12,8 +12,19 @@ Instructions to get MaaS and HFS set up on the deploying machine:
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 # installs node
 nvm install 20
-echo gh:GigiaJ | sudo maas createadmin --username=<USERNAME> --email=<EMAIL>
-sudo maas init rack
+$MAAS_USERNAME=USERNAMEHERE
+$MAAS_EMAIL=EMAILHERE
+MAAS_DBUSER=USERNAMEHERE
+MAAS_DBPASS=PASSWORDHERE
+MAAS_DBNAME=DBNAMEHERE
+HOSTNAME=localhost
+sudo -i -u postgres psql -c "CREATE USER \"$MAAS_DBUSER\" WITH ENCRYPTED PASSWORD '$MAAS_DBPASS'"
+sudo -i -u postgres createdb -O "$MAAS_DBUSER" "$MAAS_DBNAME"
+sudo mkdir -p /etc/postgresql/14/main
+sudo touch /etc/postgresql/14/main/pg_hba.conf
+echo "host    $MAAS_DBNAME    $MAAS_DBUSER    0/0     md5" | sudo tee -a /etc/postgresql/14/main/pg_hba.conf
+sudo maas init region+rack --database-uri "postgres://$MAAS_DBUSER:$MAAS_DBPASS@$HOSTNAME/$MAAS_DBNAME"
+echo gh:GigiaJ | sudo maas createadmin --username=$MAAS_USERNAME --email=$MAAS_EMAIL
 npx hfs@latest
 ```
 This installs node, maas, configures maas, then installs and runs hfs.
