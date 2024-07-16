@@ -32,6 +32,26 @@ npx hfs@latest
 ```
 This installs node, maas, configures maas, then installs and runs hfs.
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# It seems LXD provides this functionality if you configure it
+
 Append the configs to the config.yaml:
 ```
 echo "port: 8080" | sudo tee -a ~/.hfs/config.yaml
