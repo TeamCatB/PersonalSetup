@@ -25,14 +25,17 @@ sudo touch /etc/postgresql/14/main/pg_hba.conf
 echo "host    $MAAS_DBNAME    $MAAS_DBUSER    0/0     md5" | sudo tee -a /etc/postgresql/14/main/pg_hba.conf
 sudo maas init region+rack --database-uri "postgres://$MAAS_DBUSER:$MAAS_DBPASS@$HOSTNAME/$MAAS_DBNAME"
 sudo maas createadmin --username=$MAAS_USERNAME --email=$MAAS_EMAIL
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 npx hfs@latest
 ```
 This installs node, maas, configures maas, then installs and runs hfs.
 
-Append to ~/.hfs/config.yaml:
+Append the configs to the config.yaml:
 ```
-port: 8080
-create-admin: password
+echo "port: 8080" | sudo tee -a ~/.hfs/config.yaml
+echo "create-admin: password"  | sudo tee -a ~/.hfs/config.yaml
 ```
 This sets the port to be above 1024 (1024 and lower require root). Then it sets a password for the local admin so we can set-up from there
 
@@ -48,5 +51,20 @@ MaaS expects a SimpleStream (LXD/LXC) format for images to be served to it. (htt
 We use the tool here to build those into our directory we set in HFS to be shared:
 https://canonical-lxd-imagebuilder.readthedocs-hosted.com/en/latest/howto/install/
 
+We want to use the make file as the snap doesn't work as expected it seems
+
 In which we use simplestream-maintainer from canonical themselves to build our directory
 
+The simplestream-maintainer ends up in ~/go/bin
+
+Make a new area for this in your directories:
+```
+mkdir ~/Files
+cd ~/Files
+mkdir images
+mv <imagename> ./images
+~/go/bin/simplestream-maintainer build ./
+```
+This will set up the directory and populate the streams/v1/index.json files for you
+
+Now we use HFS to serve these files
