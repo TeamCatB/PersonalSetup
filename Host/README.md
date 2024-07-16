@@ -1,6 +1,9 @@
 We deploy the packer built images out using MaaS (Metal as a Service) and HFS (HTTP File Server) (HFS is used to provide MaaS a URL to pull images from)
 
 Pre-req set-up for a Debian-based distro
+Personally using an Odroid using Armbian.
+https://www.armbian.com/odroid-m1/
+
 ```
 sudo apt-get install curl git wget
 sudo snap install --channel=3.5 maas
