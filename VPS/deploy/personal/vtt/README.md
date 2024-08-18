@@ -12,3 +12,9 @@ With that we include that in our dockerbuild via copy and then execute the main.
 
 
 Can probably make an auto-updater with Docker if you're feeling creative. Could check for the latest version. Could curl the download link with creds (in a .env file or something) and then run the installer in WINE. Then could just run the normal install process inside Docker w/o needing a copy command.
+
+To build:
+dockerfile build -f Dockerfile -t foundryvtt .
+
+To run:
+docker run -d -v /deploy/personal/vtt12/data:/root/.local/share/FoundryVTT -p 30000:30000 foundryvtt
