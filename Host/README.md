@@ -88,3 +88,16 @@ mv <imagename> ./images
 This will set up the directory and populate the streams/v1/index.json files for you
 
 Now we use HFS to serve these files
+
+
+
+
+
+
+
+
+
+
+
+
+It seems MAAS works better with LXD if you just set LXD up to use the base interface and not trying to connect it to MAAS. You can hit the LXD tab in MAAS to then connect the two it seems.
