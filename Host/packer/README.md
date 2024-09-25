@@ -1,7 +1,8 @@
+```
 nmcli connection add con-name "bridge-br0" ifname br0 type bridge ipv4.method auto ipv6.method disabled connection.autoconnect yes stp no
 nmcli connection add con-name "ethernet" ifname eno1 type bridge-slave master bridge-br0 connection.autoconnect yes
 systemctl restart NetworkManager
-
+```
 On the host machine, once Packer is installed it will need root permissions so just run w/ sudo
 On host machine, QEMU will need to be informed to use the network bridge br0 (can set this in virt-manager)
 If installed on the host machine and ran raw, it is advised to change the VM encryption password once logged in
