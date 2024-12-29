@@ -106,6 +106,15 @@ services:
       - "80:80"
       - "443:443"
     # network_mode: host
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - /deploy/personal/homeassistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
 networks:
   work-network:
     driver: bridge
