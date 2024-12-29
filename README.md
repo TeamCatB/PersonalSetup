@@ -24,6 +24,8 @@ There are several technologies at play for the set-up and most of the major piec
 - [pfSense]
 - [Code-server]
 - [Caddy]
+- [FoundryVTT]
+- [Home Assistant]
 - [Jetbrains Gateway]
 
 Setting up the pre-requisites as needed goes as follows:
@@ -501,6 +503,11 @@ docker build -t caddy .
 docker run --env-file .env --name caddy -d -p 443:443 caddy
 ```
 
+### FoundryVTT
+
+FoundryVTT is just a virtual table top tool that I personally use for running DnD with friends. It has made DnD wildly more engaging and especially so as we moved apart.
+It has a lifetime license for $50 and it absurdly expandable. It supports far more systems than just DnD and has a plethera of upsides. It runs in the browser, so no downloads are needed and in the configuration we have here it is served easily through Caddy.
+https://foundryvtt.com/
 
 ### Jetbrains Gateway
 
