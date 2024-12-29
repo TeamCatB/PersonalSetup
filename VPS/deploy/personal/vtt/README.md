@@ -1,17 +1,11 @@
-We use a Dockerfile to build the image
+So Foundry provides a VTT which we serve through Caddy after we build it using Docker. It has been configured to have a tidy auto-downloader script once you've provided your credentials for the site through a series of simplistic curl commands.
+From there the software is downloaded as a zip and then unzipped and the command to execute on run is the main.js file in the directory.
 
-After installing FoundryVTT go to the program files directory. On Linux it'll be installed via WINE and so it'll be somewhere like:
-/home/USER/.wine/drive_c/Program Files/Foundry Virtual Tabletop/resources/
-We need the /app directory inside here
+TODO:
+THIS MAY REQUIRE THE LICENSE ACTIVATION TO BE ADDED
+I DID NOT TEST FROM ZERO TO FULLY FUNCTIONAL. ONLY FROM ZERO TO DOCKER BUILD COMPLETION (meaning it was downloaded and unzipped)
+Such a step would be short however
 
-
-With that we include that in our dockerbuild via copy and then execute the main.js file in the directory inside the container with Node
-
-
-
-
-
-Can probably make an auto-updater with Docker if you're feeling creative. Could check for the latest version. Could curl the download link with creds (in a .env file or something) and then run the installer in WINE. Then could just run the normal install process inside Docker w/o needing a copy command.
 
 To build:
 dockerfile build -f Dockerfile -t foundryvtt .
