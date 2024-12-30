@@ -26,6 +26,12 @@ There are several technologies at play for the set-up and most of the major piec
 - [Caddy]
 - [FoundryVTT]
 - [Home Assistant]
+- [Redbot]
+- [Kubernetes]
+- [Pulumi]
+- [Tinkerbell]
+- [Ansible]
+- [cloud-init]
 - [Jetbrains Gateway]
 
 Setting up the pre-requisites as needed goes as follows:
@@ -509,8 +515,44 @@ FoundryVTT is just a virtual table top tool that I personally use for running Dn
 It has a lifetime license for $50 and it absurdly expandable. It supports far more systems than just DnD and has a plethera of upsides. It runs in the browser, so no downloads are needed and in the configuration we have here it is served easily through Caddy.
 https://foundryvtt.com/
 
-### Jetbrains Gateway
+### Home Assistant
+Tool to manage IoT with much greater granularity.
+https://www.home-assistant.io/
 
+### Redbot
+Redbot is an open-source self-hosted discord bot that has a wide variety of plugins and customization. I personally use it as a Discord bot.
+https://docs.discord.red/en/stable/index.html
+
+### Kubernetes
+Kubernetes is a container orchestration tool. So Docker on steriods. It can facilitate your containers on *multiple* computers once set them up.
+https://kubernetes.io/
+
+### Pulumi
+Pulumi is an Infrastructure as Code (IaC) tool. It is cloud agnostic meaning it can target any cloud environment and work with it (including on-prem set ups to a degree).
+Currently we use it to configure our cloud provider clusters and easily make changes to them.
+https://www.pulumi.com/
+
+### Tinkerbell
+Tinkerbell is our bare metal configuration tool. Currently not implemented yet at all.
+https://tinkerbell.org/
+
+### Ansible
+https://docs.ansible.com/ansible/latest/index.html
+Ansible attempts to provide your configurations and system state to a set of playbooks.
+This is NOT dissimilar to how NixOS operates.
+Both technically remain in an always running state (though one is an operating system baked around the idea).
+That said Ansible is better suited for widely captured and common software whereas NixOS has greater constraints
+Idealogically though Nix achieves provisioning the system to a greater degree as deployments are declaritive and the language used to implement such is purely functional.
+That said, for large scale use like a data center... Ansible is a far more practical choice.
+
+
+### Cloud-init
+Used to initialize machines (beyond what perhaps the Packer *base* you've established does). A key example might be pulling from a secrets manager and inserting those into their needed locations. If you use packer to do this, then your backed up image is entirely exploitable (and perhaps unintentionally) where as with cloud-init it would be more *at run-time*.
+https://cloudinit.readthedocs.io/en/latest/index.html
+
+### Jetbrains Gateway
+Revising how we want to implement this as we want to have Tinkerbell set up machines, Nextcloud back up the home directories, Packer to build our golden images, and Kubernetes to manage the accessibility of the application itself running in a container on those images.
+https://www.jetbrains.com/remote-development/gateway/
 
 ### Accessing the goods
 
