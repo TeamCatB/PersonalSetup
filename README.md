@@ -525,9 +525,12 @@ From here we need to navigate to add-ons store and then install file editor
 With file editor we need to add the following:
 ```
 http:
+    ip_ban_enabled: false
     use_x_forwarded_for: true
-http:
-    use_x_forwarded_for: true
+    cors_allowed_origins:
+        - ha.chickensalad.quest
+        - chickensalad.quest
+        - homeass.chickensalad.quest
     trusted_proxies:
         - 144.202.61.79
         - 24.13.64.184
