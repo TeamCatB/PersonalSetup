@@ -518,6 +518,22 @@ https://foundryvtt.com/
 ### Home Assistant
 Tool to manage IoT with much greater granularity.
 https://www.home-assistant.io/
+To set up we use a Raspberry pi with Home Assistant OS which can be flashed on w/ the Pi Image Tool
+After we connect in a browser window we make an account
+Then we need to enable advanced settings in our profile 
+From here we need to navigate to add-ons store and then install file editor
+With file editor we need to add the following:
+```
+http:
+    use_x_forwarded_for: true
+    trusted_proxies:
+        - 172.0.0.0/8
+```
+This will allow Caddy to connect to the http server that Home Assistant runs. We can then place Caddy auth features in front as an extra barrier.
+Seems the default port is 8123
+
+We also needed to set up some port-forwarding to forward WAN traffic to the Pi and then an outbound rule to allow it to exit.
+You also need a dynamic DNS configured (we used Cloudflare w/ their proxy feature). 
 
 ### Redbot
 Redbot is an open-source self-hosted discord bot that has a wide variety of plugins and customization. I personally use it as a Discord bot.
