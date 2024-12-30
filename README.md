@@ -526,11 +526,39 @@ With file editor we need to add the following:
 ```
 http:
     use_x_forwarded_for: true
+http:
+    use_x_forwarded_for: true
     trusted_proxies:
+        - 144.202.61.79
+        - 24.13.64.184
         - 172.0.0.0/8
+        - ::/1
+        - 2607:fb90:a2ce:99f:d409:71c4:5806:c4c
+        - 103.21.244.0/22
+        - 103.22.200.0/22
+        - 103.31.4.0/22
+        - 104.16.0.0/13
+        - 104.24.0.0/14
+        - 108.162.192.0/18
+        - 131.0.72.0/22
+        - 141.101.64.0/18
+        - 162.158.0.0/15
+        - 172.64.0.0/13
+        - 173.245.48.0/20
+        - 188.114.96.0/20
+        - 190.93.240.0/20
+        - 197.234.240.0/22
+        - 198.41.128.0/17
+        - 2400:cb00::/32
+        - 2606:4700::/32
+        - 2803:f800::/32
+        - 2405:b500::/32
+        - 2405:8100::/32
+        - 2a06:98c0::/29
+        - 2c0f:f248::/32
 ```
 This will allow Caddy to connect to the http server that Home Assistant runs. We can then place Caddy auth features in front as an extra barrier.
-Seems the default port is 8123
+Seems the default port is 8123. (Many of these are for Cloudflare's proxy ranges)
 
 We also needed to set up some port-forwarding to forward WAN traffic to the Pi and then an outbound rule to allow it to exit.
 You also need a dynamic DNS configured (we used Cloudflare w/ their proxy feature). 
