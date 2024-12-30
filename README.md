@@ -563,6 +563,8 @@ http:
 This will allow Caddy to connect to the http server that Home Assistant runs. We can then place Caddy auth features in front as an extra barrier.
 Seems the default port is 8123. (Many of these are for Cloudflare's proxy ranges)
 
+Cloudflare also expects Strict SSL/TLS for this sort of set up. (VPS/Caddy -> Cloudflare -> Home Network -> Cloudflare -> VPS/Caddy)
+
 We also needed to set up some port-forwarding to forward WAN traffic to the Pi and then an outbound rule to allow it to exit.
 You also need a dynamic DNS configured (we used Cloudflare w/ their proxy feature). 
 
