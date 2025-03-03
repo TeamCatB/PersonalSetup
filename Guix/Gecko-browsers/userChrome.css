@@ -1,13 +1,19 @@
-/* Squash tab bar to 1px tall and hide the tabs */
+/* This moves the min max and close buttons down into the nav bar area and aligns everything closer so it fits nicely.
+   It also removes the new tab interface pieces entirely and expects the user to use a vertical tab extension
+*/
 #TabsToolbar {
-  height: 1px !important;
-  min-height: 1px !important;
   max-height: 1px !important;
+  z-index: 10;
+}
+
+#titlebar {
+ z-index: 1000;
 }
 
 #TabsToolbar .tabbrowser-tab {
   display: none !important;
 }
+
 
 #TabsToolbar .tabs-alltabs-button {
   display: none !important;
@@ -15,4 +21,28 @@
 
 #TabsToolbar .toolbarbutton-1 {
   display: none !important;
+}
+
+#navigator-toolbox {
+  z-index: 0 !important;
+  position: relative;
+}
+
+#urlbar-container {
+  max-width: 90%;
+}
+
+#PanelUI-menu-button {
+  display: flex;
+}
+#nav-bar-customization-target {
+  max-width: 90%
+}
+
+.titlebar-buttonbox-container {
+   //transform: scale(5);
+  top: 10px !important;
+  right: 10px !important;
+  z-index: 999;
+  position: absolute !important;
 }
