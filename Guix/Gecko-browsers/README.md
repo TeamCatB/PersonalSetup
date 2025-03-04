@@ -61,3 +61,6 @@ Just drag and drop it into the same area of librewolf
 
 
 Restart the browser
+
+Test here
+https://integration.widevine.com/player
