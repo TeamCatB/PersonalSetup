@@ -9,9 +9,30 @@
 
 ;; Indicate which modules to import to access the variables
 ;; used in this configuration.
-(use-modules (gnu) (nongnu packages linux))
-(use-service-modules base cups desktop networking ssh xorg )
+(use-modules	(gnu)
+		(guix packages)
+    (gnu packages shells)
+		(gnu packages freedesktop)
+		(gnu packages gl)
+		(gnu packages glib)
+		(gnu packages gtk)
+		(gnu packages gnome)
+		(gnu packages display-managers)
+		(gnu packages linux)
+		(gnu packages xorg)
+    (nongnu packages linux)
+		(nongnu system linux-initrd)
+    ((gnu packages fonts) #:select (
+      font-google-noto
+      font-google-noto-serif-cjk
+      font-google-noto-sans-cjk
+      font-google-noto-emoji
+  ))  
+)
+(use-service-modules base  cups desktop networking ssh xorg )
 (use-package-modules firmware games)
+
+
 
 (operating-system
   (kernel linux)
@@ -27,14 +48,44 @@
                   (comment "Jaggar")
                   (group "users")
                   (home-directory "/home/jaggar")
+ 		  (shell (file-append zsh "/bin/zsh"))
                   (supplementary-groups '("wheel" "netdev" "audio" "video" "input")))
                 %base-user-accounts))
+
+ (packages
+   (append
+    (list
+     bluez
+     btrfs-progs
+     amdgpu-firmware
+     mediatek-firmware
+     egl-wayland
+     wayland
+     xinit
+     xorg-server
+     xf86-input-libinput
+     xf86-video-fbdev
+     xf86-video-nouveau
+     libglvnd
+     libx11
+     libxxf86vm
+     libsm
+     gtk
+     gdm
+     dbus
+     sddm
+     font-google-noto
+     font-google-noto-serif-cjk
+     font-google-noto-sans-cjk
+     font-google-noto-emoji)
+    %base-packages))
 
 (services
    (append (list (service xfce-desktop-service-type)
                  (service plasma-desktop-service-type)
                  (service openssh-service-type)
-             	 (udev-rules-service 'steam-devices steam-devices-udev-rules)
+                 (extra-special-file "/lib64/ld-linux-x86-64.so.2" "/gnu/store/hw6g2kjayxnqi8rwpnmpraalxi0djkxc-glibc-2.39/lib/ld-linux-x86-64.so.2")
+             	   (udev-rules-service 'steam-devices steam-devices-udev-rules)
                  (set-xorg-configuration
                   (xorg-configuration (keyboard-layout keyboard-layout)))
                  (service bluetooth-service-type))
@@ -42,7 +93,17 @@
 
   (bootloader (bootloader-configuration
                 (bootloader grub-efi-bootloader)
-                (targets (list "/boot/efi"))
+                (targets (list "/boot"))
+                (menu-entries (list 
+                (menu-entry
+                  (label "Arch Linux")
+                  (device (uuid "2755-7752" 'fat))
+                  (chain-loader "/EFI/arch/grubx64.efi"))
+                (menu-entry
+                  (label "Windows")
+                  (device (uuid "F204-F2E2" 'fat))
+                  (chain-loader "/EFI/Microsoft/Boot/bootmgrw.efi"))
+                ))
                 (keyboard-layout keyboard-layout)))
 
   ;; The list of file systems that get "mounted".  The unique
@@ -59,8 +120,10 @@
                          (device (uuid "c3231cc4-d95f-4656-988d-24151ab48137" 
 					'btrfs))
 			 (type "btrfs"))
-                       (file-system
-                         (mount-point "/boot/efi")
-                         (device (uuid "F204-F2E2"
-                                       'fat32))
-                         (type "vfat")) %base-file-systems)))
+(file-system
+                         (mount-point "/boot")
+                         (device (uuid "3621-68F9"
+                                       'fat))
+                         (type "vfat"))
+
+ %base-file-systems)))
