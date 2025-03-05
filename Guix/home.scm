@@ -14,6 +14,8 @@
              (nongnu packages clojure)
              (gnu packages compression)
              (gnu packages debian)
+		(gnu packages display-managers)
+		(gnu packages freedesktop)
              (gnu packages nss)
              (gnu packages package-management)
              (gnu packages version-control)
@@ -40,9 +42,16 @@
              (nongnu packages mozilla)
              (nongnu packages game-client)
              (nongnu packages editors)
+	     (nongnu packages linux)
              (gchannel packages vivaldi)
              (gchannel packages bolt-launcher)
              (gchannel packages edge)
+ ((gnu packages fonts) #:select (
+      font-google-noto
+      font-google-noto-serif-cjk
+      font-google-noto-sans-cjk
+      font-google-noto-emoji
+  ))  
              (guix gexp))
 
 
@@ -50,27 +59,49 @@
   (home-environment
   (packages
   (list
+     bluez
+     btrfs-progs
+     amdgpu-firmware
+     mediatek-firmware
+     egl-wayland
+     wayland
+     xinit
+     xorg-server
+     xf86-input-libinput
+     xf86-video-fbdev
+     xf86-video-nouveau
+     libglvnd
+     libx11
+     libxxf86vm
+     libsm
+     gtkmm
+     gtk
+     gcc-toolchain
+     gdm
+     gdk-pixbuf
+     hicolor-icon-theme
+     dbus
+     pipewire
+     libglvnd
+     sddm
+     font-google-noto
+     font-google-noto-serif-cjk
+     font-google-noto-sans-cjk
+     font-google-noto-emoji
    librewolf
    steam
    vscodium
    git
    zsh
-   gdk-pixbuf
-   gcc-toolchain
    leiningen
-   hicolor-icon-theme
-   gtk
-   gtkmm
    gdb
    flatpak
    dpkg
    valgrind
    zlib
    sdl2
-   pipewire
    openjdk
    nss
-   libglvnd
    fmt
    ffmpeg
    strace
