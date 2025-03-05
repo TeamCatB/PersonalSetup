@@ -2,6 +2,7 @@
 		(guix packages)
     (gnu packages shells)
 		(gnu packages xorg)
+    (gnu packages linux)
     (nongnu packages linux)
 		(nongnu system linux-initrd)
    
@@ -17,6 +18,8 @@
   (timezone "America/Chicago")
   (keyboard-layout (keyboard-layout "us"))
   (host-name "Catdog7")
+
+  (kernel-loadable-modules (list v4l2loopback-linux-module))
 
 (swap-devices
  (list
