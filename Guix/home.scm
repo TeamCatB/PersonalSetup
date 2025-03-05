@@ -11,124 +11,99 @@
              (gnu system)
              (gnu system shadow)
              (nongnu packages)
-             (gnu packages base)
-             (gnu packages commencement)
-             (nongnu packages clojure)
-             (gnu packages compression)
-             (gnu packages debian)
-		(gnu packages display-managers)
-		(gnu packages freedesktop)
-             (gnu packages nss)
-             (gnu packages package-management)
-             (gnu packages version-control)
-             ;;(gnu packages xdisorg)           ;; For X packages
-             (gnu packages xorg)
-             (gnu packages web)
-             (gnu packages ssh)
-             (gnu packages shells)
-             (gnu packages gcc)
-             (gnu packages gnome)
-             (gnu packages gtk)
-             (gnu packages gdb)
-             (gnu packages glib)
-             (gnu packages gl)
-             (gnu packages librewolf)
-             (gnu packages linux)
-             (gnu packages sdl)
-             (gnu packages pretty-print)
-             (gnu packages java)
-             (gnu packages databases)
-             (gnu packages valgrind)
-             (gnu packages video)
-             (gnu packages vulkan)
-             (nongnu packages mozilla)
-             (nongnu packages game-client)
-             (nongnu packages editors)
-	     (nongnu packages linux)
-             (gchannel packages vivaldi)
-             (gchannel packages bolt-launcher)
-             (gchannel packages edge)
- ((gnu packages fonts) #:select (
-      font-google-noto
-      font-google-noto-serif-cjk
-      font-google-noto-sans-cjk
-      font-google-noto-emoji
-  ))  
              (guix gexp))
 
+(define %dev-packages
+  (specifications->packages
+    '(
+    "openjdk:jdk"
+    "leiningen"
+    "valgrind"
+    "gdb"
+    "gcc-toolchain"
+    "git"
+  )))
+  
+(define %program-packages
+  (specifications->packages
+  '(
+    "librewolf"
+    "steam"
+    "vscodium"
+    "microsoft-edge-stable"
+    "bolt-launcher"
+    "obs"
+    "obs-droidcam"
+    "flatpak"
+  )))
 
-(define home-config
-  (home-environment
+(define %desktop-packages
+ (append
+  (specifications->packages
+  '(
+  ;; "v4l2loopback-linux-module"
+  "xdg-desktop-portal" ;;actual package
+  "xdg-desktop-portal-wlr" ;;backend
+  "xdg-desktop-portal-kde" ;;backend
+  "dbus"
+  "pipewire"
+  "font-google-noto"
+  "font-google-noto-serif-cjk"
+  "font-google-noto-sans-cjk"
+  "font-google-noto-emoji"
+  "dpkg"
+  "zsh"
+  "zlib"
+  "sdl2"
+  "nss"
+  "fmt"
+  "ffmpeg"
+  "strace"
+  "xhost"
+  "xauth"
+  "bluez"
+  "btrfs-progs"
+  "amdgpu-firmware"
+  "mediatek-firmware"
+  "egl-wayland"
+  "wayland"
+  "xinit"
+  "xorg-server"
+  "xf86-input-libinput"
+  "xf86-video-fbdev"
+  "xf86-video-nouveau"
+  "libglvnd"
+  "libx11"
+  "libxxf86vm"
+  "libsm"
+  "gtkmm"
+  "gtk"
+  "gdm"
+  "gdk-pixbuf"
+  "hicolor-icon-theme"
+  "libglvnd"
+  "sddm"
+  ))))
+
+
+
+(home-environment
   (packages
-  (list
-     bluez
-     btrfs-progs
-     amdgpu-firmware
-     mediatek-firmware
-     egl-wayland
-     wayland
-     xinit
-     xorg-server
-     xf86-input-libinput
-     xf86-video-fbdev
-     xf86-video-nouveau
-     libglvnd
-     libx11
-     libxxf86vm
-     libsm
-     gtkmm
-     gtk
-     gcc-toolchain
-     gdm
-     gdk-pixbuf
-     hicolor-icon-theme
-     dbus
-     obs
-     xdg-desktop-portal-wlr
-     v4l2loopback-linux-module
-     pipewire
-     libglvnd
-     sddm
-     font-google-noto
-     font-google-noto-serif-cjk
-     font-google-noto-sans-cjk
-     font-google-noto-emoji
-   librewolf
-   steam
-   vscodium
-   git
-   zsh
-   leiningen
-   gdb
-   flatpak
-   dpkg
-   valgrind
-   zlib
-   sdl2
-   openjdk:jdk
-   nss
-   fmt
-   ffmpeg
-   strace
-   xhost
-   xauth
-   microsoft-edge-stable
-   bolt-launcher 
+  (append
+   %dev-packages
+   %program-packages
+   %desktop-packages
   ))
     (services
       (list
-        ;; Uncomment the shell you wish to use for your user:
-        ;(service home-bash-service-type)
-        ;(service home-fish-service-type)
         (service home-zsh-service-type)
         (service home-pipewire-service-type)
-        (service home-dbus-service-type )
         (service home-files-service-type
          `((".guile" ,%default-dotguile)
            (".Xdefaults" ,%default-xdefaults)))
-
         (service home-xdg-configuration-files-service-type
          `(("gdb/gdbinit" ,%default-gdbinit)
-           ("nano/nanorc" ,%default-nanorc)))))))
-
-home-config
+           ("nano/nanorc" ,%default-nanorc)))
+           (simple-service 'custom-dbus-services home-dbus-service-type (map specification->package (list "xdg-desktop-portal-kde" "xdg-desktop-portal")))
+          
+          )))
