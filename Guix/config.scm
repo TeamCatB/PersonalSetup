@@ -6,9 +6,8 @@
 		(nongnu system linux-initrd)
    
 )
-(use-service-modules base  cups desktop networking ssh xorg )
+(use-service-modules base dbus cups desktop sddm networking ssh xorg )
 (use-package-modules firmware games)
-
 
 
 (operating-system
