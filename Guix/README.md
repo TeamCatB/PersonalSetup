@@ -16,3 +16,5 @@ Add your user to the input group
 
 export GUIX_SANDBOX_EXTRA_SHARES="/games" 
 steam
+
+Setting up a kdewallet is generally helpful on install. Should see if we can automate that or something.
