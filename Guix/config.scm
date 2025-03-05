@@ -12,22 +12,10 @@
 (use-modules	(gnu)
 		(guix packages)
     (gnu packages shells)
-		(gnu packages freedesktop)
-		(gnu packages gl)
-		(gnu packages glib)
-		(gnu packages gtk)
-		(gnu packages gnome)
-		(gnu packages display-managers)
-		(gnu packages linux)
 		(gnu packages xorg)
     (nongnu packages linux)
 		(nongnu system linux-initrd)
-    ((gnu packages fonts) #:select (
-      font-google-noto
-      font-google-noto-serif-cjk
-      font-google-noto-sans-cjk
-      font-google-noto-emoji
-  ))  
+   
 )
 (use-service-modules base  cups desktop networking ssh xorg )
 (use-package-modules firmware games)
@@ -52,33 +40,6 @@
                   (supplementary-groups '("wheel" "netdev" "audio" "video" "input")))
                 %base-user-accounts))
 
- (packages
-   (append
-    (list
-     bluez
-     btrfs-progs
-     amdgpu-firmware
-     mediatek-firmware
-     egl-wayland
-     wayland
-     xinit
-     xorg-server
-     xf86-input-libinput
-     xf86-video-fbdev
-     xf86-video-nouveau
-     libglvnd
-     libx11
-     libxxf86vm
-     libsm
-     gtk
-     gdm
-     dbus
-     sddm
-     font-google-noto
-     font-google-noto-serif-cjk
-     font-google-noto-sans-cjk
-     font-google-noto-emoji)
-    %base-packages))
 
 (services
    (append (list (service xfce-desktop-service-type)
