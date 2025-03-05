@@ -1,14 +1,3 @@
-;; This is an operating system configuration generated
-;; by the graphical installer.
-;;
-;; Once installation is complete, you can learn and modify
-;; this file to tweak the system configuration, and pass it
-;; to the 'guix system reconfigure' command to effect your
-;; changes.
-
-
-;; Indicate which modules to import to access the variables
-;; used in this configuration.
 (use-modules	(gnu)
 		(guix packages)
     (gnu packages shells)
@@ -30,6 +19,11 @@
   (keyboard-layout (keyboard-layout "us"))
   (host-name "Catdog7")
 
+(swap-devices
+ (list
+			 (swap-space (target (uuid "cd232ce0-e15a-4df9-a6e0-0ac23f42eae8")))
+))
+
   ;; The list of user accounts ('root' is implicit).
   (users (cons* (user-account
                   (name "jaggar")
@@ -39,7 +33,6 @@
  		  (shell (file-append zsh "/bin/zsh"))
                   (supplementary-groups '("wheel" "netdev" "audio" "video" "input")))
                 %base-user-accounts))
-
 
 (services
    (append (list (service xfce-desktop-service-type)
@@ -55,7 +48,11 @@
   (bootloader (bootloader-configuration
                 (bootloader grub-efi-bootloader)
                 (targets (list "/boot"))
-                (menu-entries (list 
+                (menu-entries (list
+		(menu-entry
+		  (label "GParted")
+		  (device (uuid "2025-01-30-22-09-48-00" 'iso9660))
+		  (chain-loader "/EFI/boot/grubx64.efi"))
                 (menu-entry
                   (label "Arch Linux")
                   (device (uuid "2755-7752" 'fat))
@@ -87,4 +84,6 @@
                                        'fat))
                          (type "vfat"))
 
- %base-file-systems)))
+ %base-file-systems))
+
+)
