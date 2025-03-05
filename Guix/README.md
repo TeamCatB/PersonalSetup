@@ -18,3 +18,7 @@ export GUIX_SANDBOX_EXTRA_SHARES="/games"
 steam
 
 Setting up a kdewallet is generally helpful on install. Should see if we can automate that or something.
+
+
+
+KDE needs the splash screen disabled or it loads *REALLY* slow (30s or so)
