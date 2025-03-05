@@ -4,6 +4,8 @@
 (use-modules (gnu home)
              (gnu home services)
              (gnu home services shells)
+             (gnu home services sound)
+             (gnu home services desktop)
              (gnu packages)
              (gnu services)
              (gnu system)
@@ -78,11 +80,12 @@
      gtk
      gcc-toolchain
      gdm
-     gnome
-     gnome-themes-extra
      gdk-pixbuf
      hicolor-icon-theme
      dbus
+     obs
+     xdg-desktop-portal-wlr
+     v4l2loopback-linux-module
      pipewire
      libglvnd
      sddm
@@ -102,7 +105,7 @@
    valgrind
    zlib
    sdl2
-   openjdk
+   openjdk:jdk
    nss
    fmt
    ffmpeg
@@ -118,7 +121,8 @@
         ;(service home-bash-service-type)
         ;(service home-fish-service-type)
         (service home-zsh-service-type)
-
+        (service home-pipewire-service-type)
+        (service home-dbus-service-type )
         (service home-files-service-type
          `((".guile" ,%default-dotguile)
            (".Xdefaults" ,%default-xdefaults)))
