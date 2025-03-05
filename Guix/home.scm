@@ -78,6 +78,8 @@
      gtk
      gcc-toolchain
      gdm
+     gnome
+     gnome-themes-extra
      gdk-pixbuf
      hicolor-icon-theme
      dbus
