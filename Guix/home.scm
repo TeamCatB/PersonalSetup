@@ -1,6 +1,3 @@
-;; This is a sample Guix Home configuration which can help setup your
-;; home directory in the same declarative manner as Guix System.
-;; For more information, see the Home Configuration section of the manual.
 (use-modules (gnu home)
              (gnu home services)
              (gnu home services shells)
@@ -16,6 +13,7 @@
 (define %dev-packages
   (specifications->packages
     '(
+    "clojure"
     "openjdk:jdk"
     "leiningen"
     "valgrind"
@@ -35,6 +33,8 @@
     "obs"
     "obs-droidcam"
     "flatpak"
+    "openscad"
+    "cura"
   )))
 
 (define %desktop-packages
@@ -51,6 +51,7 @@
   "font-google-noto-serif-cjk"
   "font-google-noto-sans-cjk"
   "font-google-noto-emoji"
+  "gnome-themes-extra"
   "dpkg"
   "zsh"
   "zlib"
@@ -72,6 +73,7 @@
   "xf86-input-libinput"
   "xf86-video-fbdev"
   "xf86-video-nouveau"
+  "network-manager-openvpn"
   "libglvnd"
   "libx11"
   "libxxf86vm"
@@ -104,6 +106,4 @@
         (service home-xdg-configuration-files-service-type
          `(("gdb/gdbinit" ,%default-gdbinit)
            ("nano/nanorc" ,%default-nanorc)))
-           (simple-service 'custom-dbus-services home-dbus-service-type (map specification->package (list "xdg-desktop-portal-kde" "xdg-desktop-portal")))
-          
-          )))
+        (simple-service 'custom-dbus-services home-dbus-service-type (map specification->package (list "xdg-desktop-portal-kde" "xdg-desktop-portal"))))))
