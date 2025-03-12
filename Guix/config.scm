@@ -1,15 +1,15 @@
-(use-modules	(gnu)
-		(guix packages)
+(use-modules	
+    (gnu)
     (gnu packages shells)
-		(gnu packages xorg)
+		(gnu packages gnome)
     (gnu packages linux)
     (nongnu packages linux)
 		(nongnu system linux-initrd)
    
 )
-(use-service-modules base dbus cups desktop sddm networking ssh xorg )
-(use-package-modules firmware games)
 
+(use-package-modules firmware games)
+(use-service-modules cups docker desktop sddm databases networking ssh xorg )
 
 (operating-system
   (kernel linux)
@@ -33,19 +33,28 @@
                   (group "users")
                   (home-directory "/home/jaggar")
  		  (shell (file-append zsh "/bin/zsh"))
-                  (supplementary-groups '("wheel" "netdev" "audio" "video" "input")))
+                  (supplementary-groups '("docker" "wheel" "netdev" "audio" "video" "input")))
                 %base-user-accounts))
 
 (services
    (append (list (service xfce-desktop-service-type)
+                 (service mysql-service-type)
+                 (service containerd-service-type)
+                 (service docker-service-type)
                  (service plasma-desktop-service-type)
                  (service openssh-service-type)
                  (extra-special-file "/lib64/ld-linux-x86-64.so.2" "/gnu/store/hw6g2kjayxnqi8rwpnmpraalxi0djkxc-glibc-2.39/lib/ld-linux-x86-64.so.2")
              	   (udev-rules-service 'steam-devices steam-devices-udev-rules)
-                 (set-xorg-configuration
-                  (xorg-configuration (keyboard-layout keyboard-layout)))
+                 (set-xorg-configuration (xorg-configuration (keyboard-layout keyboard-layout)))
                  (service bluetooth-service-type))
-           %desktop-services))
+                 (modify-services %desktop-services
+                 (network-manager-service-type config =>
+                 (network-manager-configuration
+                  (inherit config)
+                  (vpn-plugins
+                   (list network-manager-openvpn)))))
+           )
+)
 
   (bootloader (bootloader-configuration
                 (bootloader grub-efi-bootloader)
@@ -66,9 +75,6 @@
                 ))
                 (keyboard-layout keyboard-layout)))
 
-  ;; The list of file systems that get "mounted".  The unique
-  ;; file system identifiers there ("UUIDs") can be obtained
-  ;; by running 'blkid' in a terminal.
   (file-systems (cons* (file-system
                          (mount-point "/")
                          (device (uuid
@@ -85,7 +91,6 @@
                          (device (uuid "3621-68F9"
                                        'fat))
                          (type "vfat"))
-
  %base-file-systems))
 
 )
