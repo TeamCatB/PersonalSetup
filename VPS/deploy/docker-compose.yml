@@ -77,20 +77,24 @@ services:
     privileged: true
     network_mode: host
   redbot:
+    container_name: redbot
     build:
       context: ./personal/redbot
       dockerfile: Dockerfile
-      container_name: redbot
       args:
         BOT_NAME: ${BOT_NAME}
   vtt:
+    container_name: vtt
     build:
       context: ./personal/vtt
       dockerfile: Dockerfile
-      container_name: vtt
       args:
         FOUNDRY_USERNAME: ${FOUNDRY_USERNAME}
         FOUNDRY_PASSWORD: ${FOUNDRY_PASSWORD}
+    volumes:
+      - /deploy/personal/vtt12/data:/root/.local/share
+    ports:
+      - "30000":"30000"
 networks:
   personal-network:
     driver: bridge
