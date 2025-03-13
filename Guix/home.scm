@@ -35,6 +35,7 @@
     "flatpak"
     "openscad"
     "cura"
+    "conky"
   )))
 
 (define %desktop-packages
