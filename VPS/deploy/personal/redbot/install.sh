@@ -12,6 +12,6 @@ python -m pip install -U "Red-DiscordBot[postgres]"
 
 
 # TODO:
-redbot-setup
+echo "${BOT_NAME}\nY\n\n" | redbot-setup
 # This has follow-up prompts that need to be fed info
 # BOT_NAME is the env variable provided rn but you might need more
