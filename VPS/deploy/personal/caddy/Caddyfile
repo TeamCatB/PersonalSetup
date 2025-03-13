@@ -1,7 +1,108 @@
-https://{env.NEXTCLOUD_SUBDOMAIN}:443 {
-        reverse_proxy localhost:{env.NEXTCLOUD_APACHE_PORT}
+# The Caddyfile is an easy way to configure your Caddy web server.
+#
+# Unless the file starts with a global options block, the first
+# uncommented line is always the address of your site.
+#
+# To use your own domain name (with automatic HTTPS), first make
+# sure your domain's A/AAAA DNS records are properly pointed to
+# this machine's public IP, then replace ":80" below with your
+# domain name.
+{
+        http_port 8080
+        https_port 443
+
+        order authenticate before respond
+        order authorize before basicauth
+
+        security {
+                oauth identity provider dnd-discord {
+                        realm dnd-discord
+                        driver discord
+                        client_id {env.DND_DISCORD_CLIENT_ID}
+                        client_secret {env.DND_DISCORD_CLIENT_SECRET}
+                        scopes identify guilds
+                        user_group_filters {env.DND_GUILD_ID}
+                }
+
+
+                authentication portal dndportal {
+                                crypto default token lifetime 21600
+                                crypto key sign-verify {env.DND_JWT_SHARED_KEY}
+                                cookie domain {env.DND_URL}
+                                enable identity provider dnd-discord
+
+                                transform user {
+                                        match role {env.GUILD_MEMBERS}
+                                        action add role authp/admin
+                                }
+                        }
+
+                authorization policy dndpolicy {
+                        set auth url https://auth.dnd.chickensalad.quest/
+                        crypto key verify {env.DND_JWT_SHARED_KEY}
+                        allow roles authp/admin authp/user
+                        validate bearer header
+                        inject headers with claims
+                }
+        }
 }
 
-http://{env.NEXTCLOUD_SUBDOMAIN}:80 {
-        reverse_proxy localhost:{env.NEXTCLOUD_APACHE_PORT}
+(tls_cloudflare) {
+    tls {
+        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+#       issuer acme {
+#               dir https://acme-v02.api.letsencrypt.org/directory
+#               dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+#       }
+#       issuer zerossl {
+#               dir https://acme.zerossl.com/v2/DV90
+#               dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+#       }
+    }
 }
+
+(cors) {
+        @origin header Origin {args.0}
+        header @origin {
+                Access-Control-Allow-Origin "{args.0}"
+                Access-Control-Request-Method GET
+                Access-Control-Allow-Headers *
+                defer
+        }
+}
+
+
+auth.{env.DND_URL} {
+        import tls_cloudflare
+        authenticate with dndportal
+}
+
+{env.DND_URL} {
+        import tls_cloudflare
+        authorize with dndpolicy
+        #reverse_proxy foundryvtt:30000
+        reverse_proxy localhost:30000
+}
+
+https://{env.NEXTCLOUD_URL}:443 {
+        import tls_cloudflare
+        reverse_proxy localhost:11000
+}
+
+http://{env.NEXTCLOUD_URL}:80 {
+        import tls_cloudflare
+        reverse_proxy localhost:11000
+}
+
+https://{env.STREAMING_URL} {
+#        reverse_proxy /* 98.206.128.83:8080
+}
+
+
+
+#{env.HOME_ASSISTANT_URL} {
+#        import tls_cloudflare
+#        import cors https://poo.chickensalad.quest
+#        header X-Frame-Options "allow-from https://poo.chickensalad.quest"
+# reverse_proxy /* localhost:123456
+#}
