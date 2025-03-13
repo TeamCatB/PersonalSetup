@@ -2,35 +2,6 @@ version: "2.1"
 services:
   wireguard:
     image: lscr.io/linuxserver/wireguard:latest
-    container_name: work-vpn-container
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
-      - SERVERURL=vpn.${WORK_SUBDOMAIN}
-      - SERVERPORT=${WORK_VPN_PORT}
-      - PEERS=${WORK_PEERS}
-      - PEERDNS=${WORK_DNS_IPV4}
-      - INTERNAL_SUBNET=${WORK_SUBNET}
-      - ALLOWEDIPS=0.0.0.0/0
-      - PERSISTENTKEEPALIVE_PEERS=all
-      - LOG_CONFS=true
-    volumes:
-      - /deploy/work/wireguard:/config
-      - /deploy/work/modules:/lib/modules
-    network:
-      - work-network
-        network_mode: bridge
-    ports:
-      - ${WORK_VPN_PORT}:${WORK_VPN_PORT}/udp
-    sysctls:
-      - net.ipv4.conf.all.src_valid_mark=1
-    restart: unless-stopped
-  wireguard:
-    image: lscr.io/linuxserver/wireguard:latest
     container_name: personal-vpn-container
     cap_add:
       - NET_ADMIN
@@ -39,7 +10,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
-      - SERVERURL=vpn.${PERSONAL_SUBDOMAIN}
+      - SERVERURL=vpn.${PERSONAL_URL}
       - SERVERPORT=${PERSONAL_VPN_PORT}
       - PEERS=${PERSONAL_PEERS}
       - PEERDNS=${PERSONAL_DNS_IPV4}
@@ -52,29 +23,17 @@ services:
       - /deploy/personal/modules:/lib/modules
     networks:
       - personal-network
-    network_mode: bridge
     ports:
       - ${PERSONAL_VPN_PORT}:${PERSONAL_VPN_PORT}/udp
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     restart: unless-stopped
   unbound:
-    container_name: work-dns-container
-    image: "mvance/unbound:latest"
-    networks:
-      work-network:
-        ipv4_address: ${WORK_DNS_IPV4}
-    network_mode: bridge
-    volumes:
-      - /deploy/work/unbound/a-records.conf:/opt/unbound/etc/unbound/a-records.conf
-    restart: unless-stopped
-  unbound:
     container_name: personal-dns-container
     image: "mvance/unbound:latest"
     networks:
-      work-network:
+      personal-network:
         ipv4_address: ${PERSONAL_DNS_IPV4}
-    network_mode: bridge
     volumes:
       - /deploy/personal/unbound/a-records.conf:/opt/unbound/etc/unbound/a-records.conf
     restart: unless-stopped
@@ -89,10 +48,12 @@ services:
     ports:
       - 8080:8080
     environment:
-      APACHE_PORT=11000
-      APACHE_IP_BINDING=127.0.0.1
+      - APACHE_PORT=11000
+      - APACHE_IP_BINDING=127.0.0.1
   caddy:
-    image: caddy:alpine
+    build:
+      context: ./personal/caddy
+      dockerfile: Dockerfile
     restart: always
     container_name: caddy
     volumes:
@@ -115,13 +76,22 @@ services:
     restart: unless-stopped
     privileged: true
     network_mode: host
+  redbot:
+    build:
+      context: ./personal/redbot
+      dockerfile: Dockerfile
+      container_name: redbot
+      args:
+        BOT_NAME: ${BOT_NAME}
+  vtt:
+    build:
+      context: ./personal/vtt
+      dockerfile: Dockerfile
+      container_name: vtt
+      args:
+        FOUNDRY_USERNAME: ${FOUNDRY_USERNAME}
+        FOUNDRY_PASSWORD: ${FOUNDRY_PASSWORD}
 networks:
-  work-network:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: ${WORK_IPAM_SUBNET}/24
   personal-network:
     driver: bridge
     ipam:
