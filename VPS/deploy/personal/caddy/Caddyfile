@@ -81,23 +81,22 @@ auth.{env.DND_URL} {
         import tls_cloudflare
         authorize with dndpolicy
         #reverse_proxy foundryvtt:30000
-        reverse_proxy localhost:30000
+        reverse_proxy vtt:30000
 }
 
-https://{env.NEXTCLOUD_URL}:443 {
+{env.NEXTCLOUD_URL} {
         import tls_cloudflare
-        reverse_proxy localhost:11000
-}
-
-http://{env.NEXTCLOUD_URL}:80 {
-        import tls_cloudflare
-        reverse_proxy localhost:11000
+        reverse_proxy http://nextcloud-aio-apache:11000
 }
 
 https://{env.STREAMING_URL} {
 #        reverse_proxy /* 98.206.128.83:8080
 }
 
+{env.VPN_URL} {
+        import tls_cloudflare
+        reverse_proxy {env.VPN_IP}
+}
 
 
 #{env.HOME_ASSISTANT_URL} {
