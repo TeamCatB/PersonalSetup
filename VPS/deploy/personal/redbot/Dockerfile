@@ -11,4 +11,4 @@ RUN chmod +x install.sh
 
 RUN /app/install.sh
 
-CMD source ~/redenv/bin/activate | redbot $BOT_NAME
+CMD bash -c "source ~/redenv/bin/activate | redbot $BOT_NAME"
