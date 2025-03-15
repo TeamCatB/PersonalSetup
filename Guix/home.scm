@@ -36,6 +36,7 @@
     "openscad"
     "cura"
     "conky"
+    "code-server"
   )))
 
 (define %desktop-packages
@@ -48,6 +49,7 @@
   "xdg-desktop-portal-kde" ;;backend
   "dbus"
   "pipewire"
+  "wireplumber"
   "font-google-noto"
   "font-google-noto-serif-cjk"
   "font-google-noto-sans-cjk"
