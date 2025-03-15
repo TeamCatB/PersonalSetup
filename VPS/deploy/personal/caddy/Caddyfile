@@ -98,6 +98,11 @@ https://{env.STREAMING_URL} {
         reverse_proxy {env.VPN_IP}
 }
 
+{env.VID_URL} {
+        import tls_cloudflare
+        reverse_proxy invidious:3000
+}
+
 
 #{env.HOME_ASSISTANT_URL} {
 #        import tls_cloudflare
