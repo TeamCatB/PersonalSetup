@@ -1,6 +1,7 @@
 (use-modules (gnu home)
              (gnu home services)
              (gnu home services shells)
+             (gnu home services shepherd)
              (gnu home services sound)
              (gnu home services desktop)
              (gnu packages)
@@ -90,7 +91,27 @@
   "sddm"
   ))))
 
+(define (code-server-service config)
+  (list
+    (shepherd-service
+      (documentation "Run code-server")
+      (provision '(code-server))
+      (modules '((shepherd support)))
+      (start #~(make-forkexec-constructor
+        (list #$(file-append 
+          (specification->package "code-server")
+          "/bin/code-server")
+          "--cert")
+            #:log-file (string-append %user-log-dir "/code-server.log")))
+      (stop #~(make-kill-destructor))
+      (respawn? #t))))
 
+(define home-code-server-service-type
+  (service-type 
+    (name 'code-server)
+    (extensions (list (service-extension home-shepherd-service-type code-server-service)))
+    (default-value "code-server")
+    (description "code-server service")))
 
 (home-environment
   (packages
@@ -103,6 +124,7 @@
       (list
         (service home-zsh-service-type)
         (service home-pipewire-service-type)
+        (service home-code-server-service-type)
         (service home-files-service-type
          `((".guile" ,%default-dotguile)
            (".Xdefaults" ,%default-xdefaults)))
