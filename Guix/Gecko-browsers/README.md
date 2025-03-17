@@ -72,3 +72,6 @@ https://integration.widevine.com/player
 To fix the paste as the right click in code-server add this to that file
 
 user_pref("dom.events.testing.asyncClipboard", true)
+
+For local domain to route correctly:
+user_pref("network.dns.localDomains", "code.chickensalad.quest")
