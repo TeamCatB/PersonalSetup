@@ -27,6 +27,7 @@
   (specifications->packages
   '(
     "librewolf"
+    "floorp"
     "steam"
     "vscodium"
     "microsoft-edge-stable"
@@ -71,7 +72,10 @@
   "amdgpu-firmware"
   "mediatek-firmware"
   "egl-wayland"
+  "procps"
+  "pkg-config"
   "wayland"
+  "xcb-utils"
   "xinit"
   "xorg-server"
   "xf86-input-libinput"
@@ -80,6 +84,7 @@
   "network-manager-openvpn"
   "libglvnd"
   "libx11"
+  "libxcb"
   "libxxf86vm"
   "libsm"
   "gtkmm"
@@ -100,8 +105,7 @@
       (start #~(make-forkexec-constructor
         (list #$(file-append 
           (specification->package "code-server")
-          "/bin/code-server")
-          "--cert")
+          "/bin/code-server"))
             #:log-file (string-append %user-log-dir "/code-server.log")))
       (stop #~(make-kill-destructor))
       (respawn? #t))))
