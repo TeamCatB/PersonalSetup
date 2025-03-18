@@ -29,29 +29,29 @@ user_pref("media.gmp.storage.version.observed", 0);
 /***
 Enable our local code-server instance
 **/
-user_pref("network.dns.localDomains", "code.chickensalad.quest")
+user_pref("network.dns.localDomains", "code.chickensalad.quest");
 
 /***
 Fix paste being the default right click behavior in code-server
 **/
-user_pref("dom.events.testing.asyncClipboard", true)
+user_pref("dom.events.testing.asyncClipboard", true);
 
 /***
 Disable tab bar
 **/
-user_pref("floorp.browser.tabbar.settings", 1)
+user_pref("floorp.browser.tabbar.settings", 1);
 
 /***
 Disable sidebar
 **/
-user_pref("floorp.browser.sidebar.enable", false)
+user_pref("floorp.browser.sidebar.enable", false);
 
 /**
 Disables bookmark bar
 **/
-user_pref("browser.toolbars.bookmarks.visibility", "never")
+user_pref("browser.toolbars.bookmarks.visibility", "never");
 
 /**
 Sets the user interface
 **/
-user_pref("floorp.browser.user.interface", 7)
+user_pref("floorp.browser.user.interface", 7);
