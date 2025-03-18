@@ -22,3 +22,6 @@ Setting up a kdewallet is generally helpful on install. Should see if we can aut
 
 
 KDE needs the splash screen disabled or it loads *REALLY* slow (30s or so)
+
+
+extensionKind in VS Code (search the setting in the settings section) can be used to stop some extensions from trying to run on the local
