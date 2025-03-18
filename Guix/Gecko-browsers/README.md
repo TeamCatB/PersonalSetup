@@ -33,22 +33,29 @@ Restart the browser and the changes will have taken effect.
 Enabling DRM in Librewolf (Hacky for now)
 In the .librewolf directory in a file named prefs.js add these anywhere you want
 
-user_pref("media.eme.enabled", true);
-user_pref("media.eme.hdcp-policy-check.enabled", false);
-user_pref("media.gmp-gmpopenh264.enabled", true);
-user_pref("media.gmp-manager.buildID", "20250209210057");
-user_pref("media.gmp-manager.lastCheck", 1741035338);
-user_pref("media.gmp-manager.lastEmptyCheck", 1741035338);
-user_pref("media.gmp-provider.enabled", true);
-user_pref("media.gmp-widevinecdm.abi", "x86_64-gcc3");
+/**
+Potentially unneeded
+**/
 user_pref("media.gmp-widevinecdm.hashValue", "9f1fe2c912897bc644f936170eaa6a2cb13772e9456e377ebcb489ae58b85ce8095d7584c8e51658857e90e06b33f7e8005af58f6e91fe93bae752f3fe561ec6");
 user_pref("media.gmp-widevinecdm.lastDownload", 1739715471);
 user_pref("media.gmp-widevinecdm.lastInstallStart", 1739715470);
 user_pref("media.gmp-widevinecdm.lastUpdate", 1739715471);
 user_pref("media.gmp-widevinecdm.version", "4.10.2830.0");
+user_pref("media.gmp-manager.buildID", "20250209210057");
+user_pref("media.gmp-manager.lastCheck", 1741035338);
+user_pref("media.gmp-manager.lastEmptyCheck", 1741035338);
+
+
+/**
+Enable DRM
+**/
+user_pref("media.eme.enabled", true);
+user_pref("media.eme.hdcp-policy-check.enabled", false);
+user_pref("media.gmp-gmpopenh264.enabled", true);
+user_pref("media.gmp-provider.enabled", true);
+user_pref("media.gmp-widevinecdm.abi", "x86_64-gcc3");
 user_pref("media.gmp-widevinecdm.visible", true);
 user_pref("media.gmp-widevinecdm.enabled", true);
-user_pref("media.eme.enabled", true);
 user_pref("media.eme.encrypted-media-encryption-scheme.enabled", true);
 user_pref("media.gmp.storage.version.observed", 1);
 
@@ -68,10 +75,3 @@ https://integration.widevine.com/player
 
 
 
-
-To fix the paste as the right click in code-server add this to that file
-
-user_pref("dom.events.testing.asyncClipboard", true)
-
-For local domain to route correctly:
-user_pref("network.dns.localDomains", "code.chickensalad.quest")
