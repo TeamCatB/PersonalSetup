@@ -57,6 +57,7 @@
   "font-google-noto-serif-cjk"
   "font-google-noto-sans-cjk"
   "font-google-noto-emoji"
+  "font-nerd-fonts"
   "gnome-themes-extra"
   "dpkg"
   "zsh"
