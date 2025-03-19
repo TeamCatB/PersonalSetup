@@ -39,7 +39,7 @@ user_pref("dom.events.testing.asyncClipboard", true);
 /***
 Disable tab bar
 **/
-user_pref("floorp.browser.tabbar.settings", 1);
+user_pref("floorp.browser.tabbar.settings", 2);
 
 /***
 Disable sidebar
