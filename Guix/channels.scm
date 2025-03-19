@@ -29,14 +29,14 @@
           "f260da13666cd41ae3202270784e61e062a3999c"
           (openpgp-fingerprint
            "8D10 60B9 6BB8 292E 829B  7249 AED4 1CC1 93B7 01E2"))))
-    (channel
-    (name 'saayix)
-    (branch "main")
-    (url "https://codeberg.org/look/saayix")
-    (introduction
-      (make-channel-introduction
-        "12540f593092e9a177eb8a974a57bb4892327752"
-        (openpgp-fingerprint
-          "3FFA 7335 973E 0A49 47FC  0A8C 38D5 96BE 07D3 34AB"))))
+(cons* (channel
+        (name 'selected-guix-works)
+        (url "https://github.com/gs-101/selected-guix-works.git")
+        (branch "main")
+        (introduction
+         (make-channel-introduction
+          "5d1270d51c64457d61cd46ec96e5599176f315a4"
+          (openpgp-fingerprint
+           "C780 21F7 34E4 07EB 9090  0CF1 4ACA 6D6F 89AB 3162"))))
+       %default-channels)
   %default-channels)
-
