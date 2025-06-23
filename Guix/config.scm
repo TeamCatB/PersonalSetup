@@ -1,10 +1,10 @@
 (use-modules	
     (gnu)
     (gnu packages shells)
-		(gnu packages gnome)
+    (gnu packages gnome)
     (gnu packages linux)
     (nongnu packages linux)
-		(nongnu system linux-initrd)
+    (nongnu system linux-initrd)
    
 )
 
@@ -42,6 +42,7 @@
                  (service containerd-service-type)
                  (service docker-service-type)
                  (service plasma-desktop-service-type)
+                 (service gnome-desktop-service-type)
                  (service openssh-service-type)
                  (extra-special-file "/lib64/ld-linux-x86-64.so.2" "/gnu/store/hw6g2kjayxnqi8rwpnmpraalxi0djkxc-glibc-2.39/lib/ld-linux-x86-64.so.2")
              	   (udev-rules-service 'steam-devices steam-devices-udev-rules)
