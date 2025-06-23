@@ -85,6 +85,7 @@
   "xf86-video-nouveau"
   "network-manager-openvpn"
   "libglvnd"
+  "libp11"
   "libx11"
   "libxcb"
   "libxxf86vm"
@@ -126,15 +127,20 @@
    %program-packages
    %desktop-packages
   ))
-    (services
-      (list
-        (service home-zsh-service-type)
-        (service home-pipewire-service-type)
-        (service home-code-server-service-type)
-        (service home-files-service-type
-         `((".guile" ,%default-dotguile)
-           (".Xdefaults" ,%default-xdefaults)))
-        (service home-xdg-configuration-files-service-type
-         `(("gdb/gdbinit" ,%default-gdbinit)
-           ("nano/nanorc" ,%default-nanorc)))
-        (simple-service 'custom-dbus-services home-dbus-service-type (map specification->package (list "xdg-desktop-portal-kde" "xdg-desktop-portal"))))))
+  (services
+    (list
+      (service home-zsh-service-type)
+      (service home-pipewire-service-type)
+      (service home-code-server-service-type)
+      (service home-files-service-type
+        `((".guile" ,%default-dotguile)
+          (".Xdefaults" ,%default-xdefaults)))
+      (service home-xdg-configuration-files-service-type
+        `(("gdb/gdbinit" ,%default-gdbinit)
+          ("nano/nanorc" ,%default-nanorc)))
+      (simple-service 'custom-dbus-services home-dbus-service-type (map specification->package (list "xdg-desktop-portal-kde" "xdg-desktop-portal")))
+      (simple-service 'extra-environment-variables home-environment-variables-service-type   
+  `(("GUIX_SANDBOX_EXTRA_SHARES" . "/games")
+    ("QT_QPA_PLATFORM" . "xcb")))
+))
+)
