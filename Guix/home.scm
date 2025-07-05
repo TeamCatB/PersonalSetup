@@ -166,17 +166,25 @@ shepherd services.")
                              wayland-hyprland-env-shepherd-service)))))
 
 (define (code-server-service config)
+  ;; This procedure defines a Shepherd service to run and manage code-server,
+  ;; which provides a web-based instance of VS Code. The service ensures
+  ;; code-server starts automatically and restarts if it crashes.
   (list
     (shepherd-service
-      (documentation "Run code-server")
-      (provision '(code-server))
+      (documentation "Run the code-server backend.")
+      (provision '(code-server)) ;; Ensure the code-server package is available.
       (modules '((shepherd support)))
+
+      ;; Start the service by directly executing the binary from its package path.
+      ;; All output is redirected to a dedicated log file in the user's home directory.
       (start #~(make-forkexec-constructor
-        (list #$(file-append 
-          (specification->package "code-server")
-          "/bin/code-server"))
+                (list #$(file-append (specification->package "code-server") "/bin/code-server"))
             #:log-file (string-append %user-log-dir "/code-server.log")))
+
+      ;; To stop the service, simply send a kill signal to the process.
       (stop #~(make-kill-destructor))
+
+      ;; Automatically respawn the service if it terminates unexpectedly.
       (respawn? #t))))
 
 (define home-code-server-service-type
