@@ -33,8 +33,7 @@
 
 (swap-devices
  (list
-			 (swap-space (target (uuid "cd232ce0-e15a-4df9-a6e0-0ac23f42eae8")))
-))
+	   (swap-space (target (uuid "cd232ce0-e15a-4df9-a6e0-0ac23f42eae8")))))
 
   ;; The list of user accounts ('root' is implicit).
   (users (cons* (user-account
