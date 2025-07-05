@@ -72,14 +72,12 @@
                 (menu-entry
                   (label "Windows")
                   (device (uuid "F204-F2E2" 'fat))
-                  (chain-loader "/EFI/Microsoft/Boot/bootmgrw.efi"))
-                ))
+                               (chain-loader "/EFI/Microsoft/Boot/bootmgrw.efi"))))
                 (keyboard-layout keyboard-layout)))
 
   (file-systems (cons* (file-system
                          (mount-point "/")
-                         (device (uuid
-                                  "b9c6ca07-2d84-4730-8fb7-975f481bf36b"
+                        (device (uuid "b9c6ca07-2d84-4730-8fb7-975f481bf36b"
                                   'btrfs))
                          (type "btrfs"))
 			(file-system
@@ -89,9 +87,6 @@
 			 (type "btrfs"))
 (file-system
                          (mount-point "/boot")
-                         (device (uuid "3621-68F9"
-                                       'fat))
+                        (device (uuid "3621-68F9" 'fat))
                          (type "vfat"))
- %base-file-systems))
-
-)
+                       %base-file-systems)))
