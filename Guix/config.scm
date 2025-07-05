@@ -1,19 +1,25 @@
+;;; Core GNU modules and system definitions
+(use-modules (gnu))
+
+;;; Package definitions
 (use-modules	
-    (gnu)
              ((gnu packages shells) #:select (zsh))
              ((gnu packages gnome) #:select (network-manager-openvpn))
              ((gnu packages linux) #:select (v4l2loopback-linux-module))
-             ((gnu packages games) #:select (steam-devices-udev-rules))
+ ((gnu packages games) #:select (steam-devices-udev-rules)))
+
+;;; Service definitions
+(use-modules
              ((gnu services docker) #:select (containerd-service-type docker-service-type))
-             ((gnu services desktop) #:select (plasma-desktop-service-type gnome-desktop-service-type bluetooth-service-type %desktop-services))
+ ((gnu services desktop) #:select (gnome-desktop-service-type bluetooth-service-type %desktop-services))
              ((gnu services xorg) #:select (gdm-service-type))
-             ((gnu services sddm) #:select (sddm-service-type sddm-configuration))
-             ((gnu services databases) #:select (mysql-service-type))
-             ((gnu services networking) #:select (network-manager-service-type network-manager-configuration))
              ((gnu services ssh) #:select (openssh-service-type))
+ ((gnu services networking) #:select (network-manager-service-type network-manager-configuration)))
+
+;;; Third-party and non-free modules
+(use-modules
              (gchannel packages xdg-desktop-portal-hyprland-input-capture)
-             ((nongnu packages linux) #:select (linux linux-firmware amdgpu-firmware))
-)
+ ((nongnu packages linux) #:select (linux linux-firmware amdgpu-firmware)))
 
 (operating-system
   (kernel linux)
