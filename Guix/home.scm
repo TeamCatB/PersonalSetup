@@ -222,14 +222,18 @@ shepherd services.")
   (append
    %dev-packages
    %program-packages
-    %desktop-packages))
+    %desktop-packages
+    %utility-packages
+    %lib-packages
+    %general-packages
+  ))
 
   ;; The 'services' field configures the background services and system settings
   ;; that will be managed by Guix Home.
   (services
     (list
     ;; Essential system services for modern desktop environments.
-      (service home-zsh-service-type)
+    (service home-dbus-service-type)
       (service home-pipewire-service-type)
 
     ;; Activates the custom code-server service defined above.
