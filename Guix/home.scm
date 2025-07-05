@@ -26,20 +26,20 @@
 (define %program-packages
   (specifications->packages
   '(
-    "librewolf"
-    "floorp"
-    "steam"
-    "neovim"
-    "vscodium"
-    "microsoft-edge-stable"
-    "bolt-launcher"
-    "obs"
-    "obs-droidcam"
-    "flatpak"
-    "openscad"
-    "cura"
-    "conky"
-    "code-server"
+    "deskflow"                ;; A productivity application designed to help you manage your tasks and workflows.
+    "librewolf"               ;; An independent fork of Firefox, with the primary goals of privacy, security, and user freedom.
+    "floorp"                  ;; A fork of Firefox that is more customizable and has more features than the original. It has PWAs baked in.
+    "steam"                   ;; A video game digital distribution service by Valve.
+    "neovim"                  ;; A hyperextensible, Vim-based text editor that’s backwards-compatible with Vim. We combo it with the extension in code-server/vscode.
+    "vscodium"                ;; A community-driven, freely-licensed binary distribution of Microsoft’s Visual Studio Code.
+    "microsoft-edge-stable"   ;; The stable release of Microsoft's Edge web browser.
+    "bolt-launcher"           ;; A third-party launcher for Jagex accounts for the popular online game RuneScape and Old School RuneScape.
+    "obs"                     ;; Open Broadcaster Software, a free and open-source software for video recording and live streaming.
+    "obs-droidcam"            ;; A plugin for OBS Studio that lets you use your phone as a camera source.
+    "flatpak"                 ;; A system for building, distributing, and running sandboxed desktop applications on Linux.
+    "openscad"                ;; A software for creating solid 3D CAD objects.
+    "conky"                   ;; A free, light-weight system monitor for X, that displays any kind of information on your desktop.
+    "code-server"             ;; A service that allows you to run VS Code on any machine anywhere and access it in the browser.
   )))
 
 (define %desktop-packages
