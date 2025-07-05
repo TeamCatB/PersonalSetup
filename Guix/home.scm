@@ -21,6 +21,8 @@
     "gdb"             ;; The GNU Debugger, which allows you to see what is going on inside another program while it executes.
     "gcc-toolchain"   ;; The GNU Compiler Collection toolchain, which includes a set of programming language compilers.
     "git"             ;; A free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.
+    "strace"          ;; A diagnostic, debugging, and instructional userspace utility for Linux to monitor system calls and signals.
+    "runc"            ;; A CLI tool for spawning and running containers according to the OCI specification.
   )))
   
 (define %program-packages
