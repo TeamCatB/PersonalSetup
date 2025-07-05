@@ -190,9 +190,12 @@ shepherd services.")
 (define home-code-server-service-type
   (service-type 
     (name 'code-server)
+   ;; This links our custom 'code-server-service' implementation to the main user Shepherd service.
     (extensions (list (service-extension home-shepherd-service-type code-server-service)))
-    (default-value "code-server")
-    (description "code-server service")))
+   ;; The #t default value means the service will be active unless explicitly disabled.
+   (default-value #t)
+   (description "A user service to run a VS Code instance in the browser.")))
+
 
 (home-environment
   (packages
