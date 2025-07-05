@@ -44,8 +44,10 @@
                  (service openssh-service-type)
   (service bluetooth-service-type)
              	   (udev-rules-service 'steam-devices steam-devices-udev-rules)
-                 (set-xorg-configuration (xorg-configuration (keyboard-layout keyboard-layout)))
-                 (service bluetooth-service-type))
+  (service pam-limits-service-type
+          (list
+          (pam-limits-entry "*" 'soft 'nofile 65536)
+          (pam-limits-entry "*" 'hard 'nofile 262144)))
                  (modify-services %desktop-services
                  (network-manager-service-type config =>
                  (network-manager-configuration
