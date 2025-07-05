@@ -198,26 +198,38 @@ shepherd services.")
 
 
 (home-environment
+  ;; The 'packages' field aggregates all previously defined lists of software
+  ;; to be installed in our profile.
   (packages
   (append
    %dev-packages
    %program-packages
-   %desktop-packages
-  ))
+    %desktop-packages))
+
+  ;; The 'services' field configures the background services and system settings
+  ;; that will be managed by Guix Home.
   (services
     (list
+    ;; Essential system services for modern desktop environments.
       (service home-zsh-service-type)
       (service home-pipewire-service-type)
+
+    ;; Activates the custom code-server service defined above.
       (service home-code-server-service-type)
+
+    ;; Manages dotfiles in the user's home directory.
       (service home-files-service-type
         `((".guile" ,%default-dotguile)
           (".Xdefaults" ,%default-xdefaults)))
+
+    ;; Manages configuration files located in '~/.config'.
       (service home-xdg-configuration-files-service-type
         `(("gdb/gdbinit" ,%default-gdbinit)
           ("nano/nanorc" ,%default-nanorc)))
-      (simple-service 'custom-dbus-services home-dbus-service-type (map specification->package (list "xdg-desktop-portal-kde" "xdg-desktop-portal")))
+
+    ;; Extends the sandbox for Guix commands to include an additional directory,
+    ;; useful for accessing files outside the standard home paths.
+    ;; In this particular case, GUIX_SANDBOX_EXTRA_SHARES is needed for Steam to recognize
+    ;; external drives correctly as it is a sandboxed application.
       (simple-service 'extra-environment-variables home-environment-variables-service-type   
-  `(("GUIX_SANDBOX_EXTRA_SHARES" . "/games")
-    ("QT_QPA_PLATFORM" . "xcb")))
-))
-)
+                    `(("GUIX_SANDBOX_EXTRA_SHARES" . "/games"))))))
