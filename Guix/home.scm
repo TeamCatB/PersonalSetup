@@ -118,8 +118,52 @@
   "font-nerd-fonts"         ;; A collection of patched fonts with icons (Devicons, Font Awesome, etc.) for use in terminals and status bars.
   ))))
 
+(define (wayland-hyprland-env-shepherd-service config)
+  ;; This procedure defines a Shepherd service that is meant to be controlled manually.
+  ;; Its purpose is to inject Wayland and Hyprland session variables into the
+  ;; Shepherd daemon's environment, making them available to other services.
+  (list
+   (shepherd-service
+    (documentation "Sets WAYLAND_DISPLAY and HYPRLAND_INSTANCE_SIGNATURE to arguments
+passed in. This should be called from a wayland compositor: herd start
+wayland-display $WAYLAND_DISPLAY $HYPRLAND_INSTANCE_SIGNATURE")
 
+    ;; Provides the necessary environment or scripts for the service to function.
+    (provision '(wayland-hyprland-env))
 
+    ;; The service should not start automatically or respawn, as it's triggered
+    ;; manually by the user's graphical session startup script.
+    (auto-start? #f)
+    (respawn? #f)
+
+    ;; The start action is a procedure that accepts two arguments from the 'herd start'
+    ;; command and uses them to set the environment variables.
+    (start #~(lambda (wayland-display hyprland-sign)
+               (setenv "WAYLAND_DISPLAY" wayland-display)
+               (setenv "HYPRLAND_INSTANCE_SIGNATURE" hyprland-sign)))
+
+    ;; The stop action cleans up the environment by unsetting the variables.
+    (stop #~(lambda _
+              (unsetenv "WAYLAND_DISPLAY")
+              (unsetenv "HYPRLAND_INSTANCE_SIGNATURE")
+              #f)))))
+
+(define-public home-wayland-hyprland-env-service-type
+  ;; Defines the public interface that users will interact with in their home-environment records.
+  ;; This pattern abstracts the underlying Shepherd service implementation.
+  (service-type
+   (name 'home-wayland-hyprland-env)
+   (description "A service to set WAYLAND_DISPLAY and HYPRLAND_INSTANCE_SIGNATURE for
+shepherd services.")
+
+   ;; The service is disabled by default; users must explicitly enable it.
+   (default-value #f)
+
+   ;; This is how the service integrates with the system. It extends the main
+   ;; user-level Shepherd service by adding our custom service to it.
+   (extensions
+    (list (service-extension home-shepherd-service-type
+                             wayland-hyprland-env-shepherd-service)))))
 
 (define (code-server-service config)
   (list
