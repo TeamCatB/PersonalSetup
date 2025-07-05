@@ -14,13 +14,13 @@
 (define %dev-packages
   (specifications->packages
     '(
-    "clojure"
-    "openjdk:jdk"
-    "leiningen"
-    "valgrind"
-    "gdb"
-    "gcc-toolchain"
-    "git"
+    "clojure"         ;; A dynamic, general-purpose programming language, combining the approachability and interactive development of a scripting language with an efficient and robust infrastructure for multithreaded programming.
+    "openjdk:jdk"     ;; The Java Development Kit, an implementation of the Java Platform, Standard Edition.
+    "leiningen"       ;; A build automation and dependency management tool for the Clojure programming language.
+    "valgrind"        ;; An instrumentation framework for building dynamic analysis tools that can be used to automatically detect memory management and threading bugs, and to profile your programs in detail.
+    "gdb"             ;; The GNU Debugger, which allows you to see what is going on inside another program while it executes.
+    "gcc-toolchain"   ;; The GNU Compiler Collection toolchain, which includes a set of programming language compilers.
+    "git"             ;; A free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.
   )))
   
 (define %program-packages
