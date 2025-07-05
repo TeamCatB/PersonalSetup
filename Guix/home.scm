@@ -45,9 +45,9 @@
   )))
 
 (define %utility-packages
- (append
-  (specifications->packages
-  '(
+  (append
+   (specifications->packages
+   '(
   "fmt"                     ;; A modern formatting library for C++, providing a fast and safe alternative to C-style printf.
   "ffmpeg"                  ;; A complete, cross-platform solution to record, convert and stream audio and video.
   "dpkg"                    ;; The package manager for Debian-based systems; handles installation, removal, and management of .deb packages.
@@ -197,7 +197,7 @@ shepherd services.")
       ;; All output is redirected to a dedicated log file in the user's home directory.
       (start #~(make-forkexec-constructor
                 (list #$(file-append (specification->package "code-server") "/bin/code-server"))
-            #:log-file (string-append %user-log-dir "/code-server.log")))
+                #:log-file (string-append %user-log-dir "/code-server.log")))
 
       ;; To stop the service, simply send a kill signal to the process.
       (stop #~(make-kill-destructor))
@@ -206,10 +206,10 @@ shepherd services.")
       (respawn? #t))))
 
 (define home-code-server-service-type
-  (service-type 
-    (name 'code-server)
+  (service-type
+   (name 'code-server)
    ;; This links our custom 'code-server-service' implementation to the main user Shepherd service.
-    (extensions (list (service-extension home-shepherd-service-type code-server-service)))
+   (extensions (list (service-extension home-shepherd-service-type code-server-service)))
    ;; The #t default value means the service will be active unless explicitly disabled.
    (default-value #t)
    (description "A user service to run a VS Code instance in the browser.")))
@@ -219,9 +219,9 @@ shepherd services.")
   ;; The 'packages' field aggregates all previously defined lists of software
   ;; to be installed in our profile.
   (packages
-  (append
-   %dev-packages
-   %program-packages
+   (append
+    %dev-packages
+    %program-packages
     %desktop-packages
     %utility-packages
     %lib-packages
@@ -231,27 +231,27 @@ shepherd services.")
   ;; The 'services' field configures the background services and system settings
   ;; that will be managed by Guix Home.
   (services
-    (list
+   (list
     ;; Essential system services for modern desktop environments.
     (service home-dbus-service-type)
-      (service home-pipewire-service-type)
+    (service home-pipewire-service-type)
 
     ;; Activates the custom code-server service defined above.
-      (service home-code-server-service-type)
+    (service home-code-server-service-type)
 
     ;; Manages dotfiles in the user's home directory.
-      (service home-files-service-type
-        `((".guile" ,%default-dotguile)
-          (".Xdefaults" ,%default-xdefaults)))
+    (service home-files-service-type
+             `((".guile" ,%default-dotguile)
+               (".Xdefaults" ,%default-xdefaults)))
 
     ;; Manages configuration files located in '~/.config'.
-      (service home-xdg-configuration-files-service-type
-        `(("gdb/gdbinit" ,%default-gdbinit)
-          ("nano/nanorc" ,%default-nanorc)))
+    (service home-xdg-configuration-files-service-type
+             `(("gdb/gdbinit" ,%default-gdbinit)
+               ("nano/nanorc" ,%default-nanorc)))
 
     ;; Extends the sandbox for Guix commands to include an additional directory,
     ;; useful for accessing files outside the standard home paths.
     ;; In this particular case, GUIX_SANDBOX_EXTRA_SHARES is needed for Steam to recognize
     ;; external drives correctly as it is a sandboxed application.
-      (simple-service 'extra-environment-variables home-environment-variables-service-type   
+    (simple-service 'extra-environment-variables home-environment-variables-service-type
                     `(("GUIX_SANDBOX_EXTRA_SHARES" . "/games"))))))
