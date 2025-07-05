@@ -44,52 +44,69 @@
     "code-server"             ;; A service that allows you to run VS Code on any machine anywhere and access it in the browser.
   )))
 
-(define %desktop-packages
+(define %utility-packages
  (append
   (specifications->packages
   '(
-  "gnome-themes-extra"      ;; Provides extra themes for the GNOME desktop, including the popular Adwaita-dark.
-  "dpkg"                    ;; The package manager for Debian-based systems; handles installation, removal, and management of .deb packages.
-  "zsh"                     ;; An extended Bourne shell (sh) with many improvements, including more powerful interactive features.
-  "zlib"                    ;; A software library used for data compression and decompression.
-  "sdl2"                    ;; A cross-platform development library providing low-level access to audio, keyboard, mouse, joystick, and graphics hardware.
-  "nss"                     ;; Network Security Services, a set of libraries designed to support cross-platform development of security-enabled client and server applications.
   "fmt"                     ;; A modern formatting library for C++, providing a fast and safe alternative to C-style printf.
   "ffmpeg"                  ;; A complete, cross-platform solution to record, convert and stream audio and video.
-  "strace"                  ;; A diagnostic, debugging, and instructional userspace utility for Linux to monitor system calls and signals.
-  "xhost"                   ;; A server access control program for X; it adds and deletes hostnames or user names to the list allowed to make connections to the X server.
-  "xauth"                   ;; A utility for managing X authority files, which contain authentication information for connecting to an X server.
-  "bluez"                   ;; The official Linux Bluetooth protocol stack; it provides the core Bluetooth functionality.
-  "btrfs-progs"             ;; A set of userspace utilities for managing Btrfs filesystems.
-  "amdgpu-firmware"         ;; Firmware files required for AMD Radeon graphics cards to function correctly.
-  "mediatek-firmware"       ;; Firmware files for various MediaTek wireless and Bluetooth devices.
-  "egl-wayland"             ;; A library that allows EGL (a Khronos rendering API) to work with the Wayland display protocol.
-  "procps"                  ;; A set of command-line and full-screen utilities that provide information out of the /proc filesystem, including `ps`, `top`, and `kill`.
+  "dpkg"                    ;; The package manager for Debian-based systems; handles installation, removal, and management of .deb packages.
   "pkg-config"              ;; A helper tool used when compiling applications and libraries to retrieve information about installed libraries.
-  "wayland"                 ;; A communication protocol that specifies the communication between a display server and its clients.
-  "xcb-util"                ;; A collection of utility libraries for the X C Binding (XCB), making it easier to work with.
-  "xinit"                   ;; A program that allows a user to manually start an Xorg display server.
-  "xorg-server"             ;; The core X Window System display server.
-  "xf86-input-libinput"     ;; An X.Org driver that uses the libinput library to provide generic input device support.
-  "xf86-video-fbdev"        ;; An X.Org driver for framebuffer devices, providing a basic video driver.
-  "xf86-video-nouveau"      ;; An open-source X.Org driver for NVIDIA graphics cards.
-  "network-manager-openvpn" ;; A plugin for NetworkManager to support OpenVPN connections.
+  "util-linux"              ;; A standard package of essential Linux command-line utilities.
+  "btrfs-progs"             ;; A set of userspace utilities for managing Btrfs filesystems.
+   ))))
+
+(define %lib-packages
+  (append
+   (specifications->packages
+   '(
   "libglvnd"                ;; The GL Vendor-Neutral Dispatch library, which allows multiple OpenGL implementations to coexist on the same system.
   "libp11"                  ;; A library that provides a higher-level interface for PKCS#11, simplifying interaction with cryptographic hardware.
   "libx11"                  ;; The core X11 client library, providing the fundamental functions for interacting with an X server.
   "libxcb"                  ;; The X C Binding, a replacement for Xlib that provides a more modern and efficient way to communicate with the X server.
   "libxxf86vm"              ;; The XFree86-VidModeExtension library, allowing for the manipulation of video modes.
   "libsm"                   ;; The X Session Management library.
-  "gtkmm"                   ;; The official C++ interface for the popular GUI library GTK.
-  "gtk"                     ;; The GIMP Toolkit, a multi-platform toolkit for creating graphical user interfaces.
-  "gdm"                     ;; The GNOME Display Manager, which provides graphical logins and manages display servers.
-  "runc"                    ;; A CLI tool for spawning and running containers according to the OCI specification.
-  "gdk-pixbuf"              ;; A toolkit for image loading and pixel buffer manipulation, often used with GTK.
-  "hicolor-icon-theme"      ;; A fallback icon theme that provides a standard directory structure for icon themes.
-  "sddm"                    ;; The Simple Desktop Display Manager, a modern display manager for X11 and Wayland.
+  "zlib"                    ;; A software library used for data compression and decompression.
+  "sdl2"                    ;; A cross-platform development library providing low-level access to audio, keyboard, mouse, joystick, and graphics hardware.
+  "nss"                     ;; Network Security Services, a set of libraries designed to support cross-platform development of security-enabled client and server applications.
+  "egl-wayland"             ;; A library that allows EGL (a Khronos rendering API) to work with the Wayland display protocol.   
   "libappindicator"         ;; A library that allows applications to export a menu to the system tray.
   "libdbusmenu-qt"          ;; A Qt implementation for libdbusmenu, allowing Qt applications to create D-Bus menus.
-  "util-linux"              ;; A standard package of essential Linux command-line utilities.
+  "procps"                  ;; A set of command-line and full-screen utilities that provide information out of the /proc filesystem, including `ps`, `top`, and `kill`.
+  "libnotify"               ;; A library for sending desktop notifications to a notification daemon.
+))))
+
+(define %general-packages
+  (append
+   (specifications->packages
+   '(
+  "gdm"                     ;; The GNOME Display Manager, which provides graphical logins and manages display servers.
+  "sddm"                    ;; The Simple Desktop Display Manager, a modern display manager for X11 and Wayland.
+  "xhost"                   ;; A server access control program for X; it adds and deletes hostnames or user names to the list allowed to make connections to the X server.
+  "xauth"                   ;; A utility for managing X authority files, which contain authentication information for connecting to an X server.
+  "xinit"                   ;; A program that allows a user to manually start an Xorg display server.
+  "xcb-util"                ;; A collection of utility libraries for the X C Binding (XCB), making it easier to work with.
+  "xorg-server"             ;; The core X Window System display server.
+  "wayland"                 ;; A communication protocol that specifies the communication between a display server and its clients.
+  "amdgpu-firmware"         ;; Firmware files required for AMD Radeon graphics cards to function correctly.
+  "mediatek-firmware"       ;; Firmware files for various MediaTek wireless and Bluetooth devices.
+  "xf86-input-libinput"     ;; An X.Org driver that uses the libinput library to provide generic input device support.
+  "xf86-video-fbdev"        ;; An X.Org driver for framebuffer devices, providing a basic video driver.
+  "xf86-video-nouveau"      ;; An open-source X.Org driver for NVIDIA graphics cards.
+  "gtkmm"                   ;; The official C++ interface for the popular GUI library GTK.
+  "gtk"                     ;; The GIMP Toolkit, a multi-platform toolkit for creating graphical user interfaces.
+  "gdk-pixbuf"              ;; A toolkit for image loading and pixel buffer manipulation, often used with GTK.
+  "bluez"                   ;; The official Linux Bluetooth protocol stack; it provides the core Bluetooth functionality.
+   ))))
+
+(define %desktop-packages
+ (append
+  (specifications->packages
+  '(
+  "hicolor-icon-theme"      ;; A fallback icon theme that provides a standard directory structure for icon themes.
+  "gnome-themes-extra"      ;; Provides extra themes for the GNOME desktop, including the popular Adwaita-dark.
+  "zsh"                     ;; An extended Bourne shell (sh) with many improvements, including more powerful interactive features.
+  "network-manager-openvpn" ;; A plugin for NetworkManager to support OpenVPN connections.
   "waybar"                  ;; Provides a highly customizable Wayland bar for Sway and other wlroots-based compositors.
   "swaynotificationcenter"  ;; A simple notification daemon for Sway/Wayland that displays notifications.
   "hyprland-protocols-input-capture" ;; On input capture merge this can be reverted to hyprland-protocols
@@ -97,7 +114,6 @@
   "hyprwayland-scanner"     ;; An implementation of wayland-scanner tailored for Hyprland.
   "hyprlang"                ;; Configuration language parser for Hyprland, enabling the config file to be parsed and used.
   "hyprlock"                ;; The official lock screen utility for the Hyprland compositor.
-  "libnotify"               ;; A library for sending desktop notifications to a notification daemon.
   "wayland-protocols"       ;; A set of standard protocols for the Wayland display server system.
   "wl-clipboard"            ;; Provides command-line copy and paste utilities for Wayland.
   "mako"                    ;; A lightweight notification daemon for Wayland.
