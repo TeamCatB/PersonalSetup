@@ -77,6 +77,8 @@
   (bootloader (bootloader-configuration
                 (bootloader grub-efi-bootloader)
                 (targets (list "/boot"))
+              ;; Add chain-loader entries for other operating systems
+              ;; installed on this machine.
                 (menu-entries (list
 		(menu-entry
 		  (label "GParted")
@@ -92,16 +94,20 @@
                                (chain-loader "/EFI/Microsoft/Boot/bootmgrw.efi"))))
                 (keyboard-layout keyboard-layout)))
 
-  (file-systems (cons* (file-system
+  (file-systems (cons* 
+                      ;; BTRFS root partition on the main NVMe drive. 
+                       (file-system
                          (mount-point "/")
                         (device (uuid "b9c6ca07-2d84-4730-8fb7-975f481bf36b"
                                   'btrfs))
                          (type "btrfs"))
+                      ;; Separate BTRFS partition on a secondary drive for games.
 			(file-system
                          (mount-point "/games")
                          (device (uuid "c3231cc4-d95f-4656-988d-24151ab48137" 
 					'btrfs))
 			 (type "btrfs"))
+                      ;; Standard EFI boot partition.
 (file-system
                          (mount-point "/boot")
                         (device (uuid "3621-68F9" 'fat))
