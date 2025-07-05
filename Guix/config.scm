@@ -35,6 +35,10 @@
  		  (shell (file-append zsh "/bin/zsh"))
                   (supplementary-groups '("docker" "wheel" "netdev" "audio" "video" "input")))
                 %base-user-accounts))
+  (packages
+    (append
+     (map specification->package '( "hyprland-input-capture"))
+      %base-packages))
 
 (services
  (cons*
