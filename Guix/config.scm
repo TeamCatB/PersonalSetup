@@ -37,7 +37,7 @@
                 %base-user-accounts))
 
 (services
-   (append (list (service xfce-desktop-service-type)
+ (cons*
                  (service mysql-service-type)
                  (service containerd-service-type)
                  (service docker-service-type)
@@ -52,10 +52,7 @@
                  (network-manager-service-type config =>
                  (network-manager-configuration
                   (inherit config)
-                  (vpn-plugins
-                   (list network-manager-openvpn)))))
-           )
-)
+       (vpn-plugins (list network-manager-openvpn)))))))
 
   (bootloader (bootloader-configuration
                 (bootloader grub-efi-bootloader)
