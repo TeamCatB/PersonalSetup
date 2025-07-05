@@ -42,7 +42,7 @@
                  (service containerd-service-type)
                  (service docker-service-type)
                  (service openssh-service-type)
-                 (extra-special-file "/lib64/ld-linux-x86-64.so.2" "/gnu/store/hw6g2kjayxnqi8rwpnmpraalxi0djkxc-glibc-2.39/lib/ld-linux-x86-64.so.2")
+  (service bluetooth-service-type)
              	   (udev-rules-service 'steam-devices steam-devices-udev-rules)
                  (set-xorg-configuration (xorg-configuration (keyboard-layout keyboard-layout)))
                  (service bluetooth-service-type))
