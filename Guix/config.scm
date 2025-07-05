@@ -56,11 +56,18 @@
                  (service docker-service-type)
                  (service openssh-service-type)
   (service bluetooth-service-type)
+  ;; Add udev rules for Steam controllers and other hardware.
              	   (udev-rules-service 'steam-devices steam-devices-udev-rules)
+  ;; Raise the open file descriptor limits. This prevents errors in applications
+  ;; that need to open many files, such as database servers or games running
+  ;; through Wine/Proton.
   (service pam-limits-service-type
           (list
           (pam-limits-entry "*" 'soft 'nofile 65536)
           (pam-limits-entry "*" 'hard 'nofile 262144)))
+  ;; Modify the default desktop services to add OpenVPN support
+  ;; directly into NetworkManager.
+  ;; Otherwise we can't use our VPN config files.
                  (modify-services %desktop-services
                  (network-manager-service-type config =>
                  (network-manager-configuration
