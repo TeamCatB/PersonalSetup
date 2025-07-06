@@ -1,1 +1,0 @@
-docker build --progress=plain --build-arg BOT_NAME=$BOT_NAME .

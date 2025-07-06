@@ -1,1 +1,0 @@
-docker build --progress=plain --build-arg FOUNDRY_USERNAME=$FOUNDRY_USERNAME --build-arg FOUNDRY_PASSWORD=$FOUNDRY_PASSWORD .

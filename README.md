@@ -1,3 +1,11 @@
+# OUTDATED
+# OUTDATED
+# OUTDATED
+
+## This is moderately still useful and accurate, but it doesn't encapsulate everything used at this point. Instead I'd like to move towards better documenting in the newer sub-repos that comprise this one.
+
+
+
 # Isolation Cloud Development Environment
 
 

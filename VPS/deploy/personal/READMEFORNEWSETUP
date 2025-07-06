@@ -1,7 +1,0 @@
-Unbound and wireguard will need to be setup for homeassistant, but for now we're going to bake the tunnel into caddy and bypass the cloudflare proxy and dynamic dns shit
-
-alternatively you could maybe set the dynamic dns inside Caddy?
-
-
-next time I'll do a wireguard tunnel wired up to an http server w/ a dns server
-then pipe requests out from the main caddy reverse proxy into it
