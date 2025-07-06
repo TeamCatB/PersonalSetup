@@ -1,0 +1,9 @@
+[submodule "PackerBuilds"]
+	path = packer-builds
+	url = https://github.com/GigiaJ/PackerBuilds.git
+[submodule "guix-dotfiles"]
+	path = guix-dotfiles
+	url = https://github.com/GigiaJ/dotfiles.git
+[submodule "vps-config-files"]
+	path = vps-config-files
+	url = https://github.com/GigiaJ/VPSConfigFiles.git
